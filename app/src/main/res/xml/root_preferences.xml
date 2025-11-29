@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- ■ 全般カテゴリ -->
+    <PreferenceCategory
+        android:title="@string/category_general">
+
+        <SwitchPreferenceCompat
+            android:key="show_toast"
+            android:title="@string/title_show_toast"
+            android:summary="@string/summary_show_toast"
+            android:defaultValue="true" />
+
+        <EditTextPreference
+            android:key="delay"
+            android:title="@string/title_delay"
+            android:dialogTitle="@string/dialog_delay"
+            android:inputType="number"
+            android:defaultValue="5.0"
+            app:useSimpleSummaryProvider="true"/>
+    </PreferenceCategory>
+
+    <!-- ■ 解像度カテゴリ -->
+    <PreferenceCategory
+        android:title="@string/category_resolution">
+
+        <SwitchPreferenceCompat
+            android:key="change_resolution"
+            android:title="@string/title_change_resolution"
+            android:summary="@string/summary_change_resolution"
+            android:defaultValue="false" />
+
+        <SwitchPreferenceCompat
+            android:key="use_native_resolution"
+            android:title="ネイティブ解像度を使用"
+            android:dependency="change_resolution"
+            android:summary="カスタム解像度の代わりにネイティブ解像度を使用します"
+            android:disableDependentsState="true"
+            android:defaultValue="false" />
+
+        <EditTextPreference
+            android:key="custom_width"
+            android:dependency="use_native_resolution"
+            android:title="@string/title_custom_width"
+            android:dialogTitle="@string/dialog_custom_width"
+            android:inputType="number"
+            android:defaultValue="1920"
+            app:useSimpleSummaryProvider="true"/>
+
+        <EditTextPreference
+            android:key="custom_height"
+            android:dependency="use_native_resolution"
+            android:title="@string/title_custom_height"
+            android:dialogTitle="@string/dialog_custom_height"
+            android:inputType="number"
+            android:defaultValue="1080"
+            app:useSimpleSummaryProvider="true"/>
+
+        <SwitchPreferenceCompat
+            android:key="change_resolution_scale"
+            android:dependency="change_resolution"
+            android:title="@string/title_change_resolution_scale"
+            android:summary="@string/summary_change_resolution_scale"
+            android:defaultValue="false" />
+
+        <EditTextPreference
+            android:key="width_scale"
+            android:dependency="change_resolution_scale"
+            android:title="@string/title_width_scale"
+            android:dialogTitle="@string/dialog_width_scale"
+            android:inputType="number"
+            android:defaultValue="1.0"
+            app:useSimpleSummaryProvider="true"/>
+
+        <EditTextPreference
+            android:key="height_scale"
+            android:dependency="change_resolution_scale"
+            android:title="@string/title_height_scale"
+            android:dialogTitle="@string/dialog_height_scale"
+            android:inputType="number"
+            android:defaultValue="1.0"
+            app:useSimpleSummaryProvider="true"/>
+
+    </PreferenceCategory>
+
+    <!-- ■ 最大FPSカテゴリ -->
+    <PreferenceCategory
+        android:title="@string/category_max_fps">
+
+        <SwitchPreferenceCompat
+            android:key="change_max_fps"
+            android:title="@string/title_change_max_fps"
+            android:summary="@string/summary_change_max_fps"
+            android:defaultValue="false" />
+
+        <SwitchPreferenceCompat
+            android:key="use_native_refresh_rate"
+            android:title="@string/title_use_native_refresh_rate"
+            android:dependency="change_max_fps"
+            android:summary="@string/summary_use_native_refresh_rate"
+            android:disableDependentsState="true"
+            android:defaultValue="false" />
+
+        <EditTextPreference
+            android:key="max_fps"
+            android:dependency="use_native_refresh_rate"
+            android:title="@string/title_max_fps"
+            android:dialogTitle="@string/dialog_max_fps"
+            android:inputType="number"
+            android:defaultValue="60"
+            app:useSimpleSummaryProvider="true"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -1,0 +1,36 @@
+<resources>
+    <!-- Reply Preference -->
+    <string-array name="reply_entries">
+        <item>Reply</item>
+        <item>Reply to all</item>
+    </string-array>
+
+    <string-array name="reply_values">
+        <item>reply</item>
+        <item>reply_all</item>
+    </string-array>
+
+    <string-array name="resolution_type_entries">
+        <item>ネイティブ</item>
+        <item>カスタム</item>
+    </string-array>
+
+    <string-array name="resolution_type_values">
+        <item>native</item>
+        <item>custom</item>
+    </string-array>
+
+    <string-array name="module_scope">
+        <item>com.fengiiley.frlegends</item>
+        <item>com.olzhas.carparking.multyplayer</item>
+        <item>com.drivezone.car.race.game</item>
+        <item>com.aim.racing</item>
+        <item>com.sbkgames.rallyracerdirt</item>
+        <item>com0.Company.ProductName1</item>
+        <item>com.unrealgames.RacinginCar2020</item>
+        <item>com.turbochilli.rollingsky</item>
+        <item>com.kiloo.subwaysurf</item>
+        <item>com.PoxelStudios.DudeTheftAuto</item>
+    </string-array>
+
+</resources>

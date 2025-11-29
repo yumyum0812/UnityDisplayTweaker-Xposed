@@ -1,0 +1,36 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="ThemeOverlay.Miruku.Preference.Material3" parent="PreferenceThemeOverlay">
+        <item name="preferenceCategoryTitleTextColor">?colorPrimary</item>
+        <item name="switchPreferenceCompatStyle">@style/ThemeOverlay.Preference.SwitchPreference</item>
+        <item name="preferenceCategoryStyle">@style/ThemeOverlay.Preference.Category</item>
+        <item name="preferenceStyle">@style/ThemeOverlay.Preference</item>
+        <item name="editTextPreferenceStyle">@style/ThemeOverlay.Preference.EditText</item>
+        <item name="dialogPreferenceStyle">@style/ThemeOverlay.Preference.Dialog</item>
+    </style>
+
+    <style name="ThemeOverlay.Preference" parent="Preference.Material">
+        <item name="layout">@layout/m3_pref</item>
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="ThemeOverlay.Preference.EditText" parent="Preference.DialogPreference.EditTextPreference.Material">
+        <item name="dialogLayout">@layout/m3_pref_dialog_edit</item>
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="ThemeOverlay.Preference.Category" parent="Preference.Category.Material">
+        <item name="android:layout">@layout/m3_pref_category</item>
+        <item name="iconSpaceReserved">false</item>
+        <item name="allowDividerAbove">false</item>
+        <item name="allowDividerBelow">false</item>
+    </style>
+
+    <style name="ThemeOverlay.Preference.SwitchPreference" parent="Preference.SwitchPreference.Material">
+        <item name="android:widgetLayout">@layout/m3_pref_switch</item>
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="ThemeOverlay.Preference.Dialog" parent="Preference.DialogPreference.Material">
+        <item name="iconSpaceReserved">false</item>
+    </style>
+</resources>
