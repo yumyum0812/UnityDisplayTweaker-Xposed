@@ -102,7 +102,7 @@ namespace AsmFuncs {
         // Arm32: Check the T-bit (1 = Thumb, 0 = Arm)
         if (funAddr & 1) {
             // Thumb: BX LR
-            MemPatch::Patch(funAddr, "70 47");
+            MemPatch::Patch(funAddr & ~1, "70 47");
         } else {
             // Arm: BX LR
             MemPatch::Patch(funAddr, "1E FF 2F E1");
