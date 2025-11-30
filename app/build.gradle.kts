@@ -55,23 +55,17 @@ dependencies {
 
 android.applicationVariants.all {
     val variant = this
-    if (variant.buildType.name == "debug") {
-        val assembleTaskName = "assemble${variant.name.capitalizeUS()}"
-        val installTaskName = "install${variant.name.capitalizeUS()}User0"
+    val variantNameCapped = variant.name.capitalizeUS()
 
-        tasks.register(installTaskName) {
-            group = "installation"
-            description = "Install APK for user 0 only"
-            dependsOn(assembleTaskName)
+    tasks.register<Exec>("install${variantNameCapped}ForUser") {
+        group = "installation"
+        description = "Install APK for specific user"
+        dependsOn("assemble${variantNameCapped}")
 
-            doLast {
-                val apkFile = variant.outputs.first().outputFile
-                println("Installing ${apkFile.name} for user 0 only")
-                project.exec {
-                    executable = "adb"
-                    args = listOf("install", "-r", "--user", "0", apkFile.absolutePath)
-                }
-            }
+        doFirst {
+            val uidStr = project.findProperty("uid")?.toString() ?: throw IllegalArgumentException("uid not given! add -Puid=<UID> to argument!")
+            val apkFile = variant.outputs.first().outputFile
+            commandLine(android.adbExecutable.absolutePath, "install", "-r", "--user", uidStr, apkFile.absolutePath)
         }
     }
 }
