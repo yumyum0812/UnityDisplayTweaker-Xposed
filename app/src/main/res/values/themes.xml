@@ -1,8 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.MyModule" parent="Base.Theme.MyModule"/>
+    <style name="Theme.ModuleManager" parent="Base.Theme.ModuleManager"/>
 
-    <style name="Base.Theme.MyModule" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:statusBarColor">?colorPrimary</item>
+    <style name="Base.Theme.ModuleManager" parent="Theme.Material3.DayNight">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="preferenceTheme">@style/ThemeOverlay.Miruku.Preference.Material3</item>
         <item name="android:listPreferredItemPaddingStart">24dp</item>
         <item name="android:listPreferredItemPaddingEnd">16dp</item>

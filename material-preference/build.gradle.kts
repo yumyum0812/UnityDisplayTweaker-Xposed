@@ -30,6 +30,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.preference)
-    implementation(libs.material)
+    implementation(libs.androidx.preference)
+    implementation(libs.google.material)
 }

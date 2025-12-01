@@ -4,11 +4,10 @@ UnityDisplayTweaker is a Xposed module that allows you to modify the resolution 
 
 ## Supported Environment
 - OS: Android
-- Minimum Xposed API: 93
-- Game ABI: armeabi-v7a or arm64-v8a (Not supported on armeabi, x86, x86_64, etc)
+- Minimum Xposed API Version: 93
+- Game ABI: armeabi-v7a or arm64-v8a
 
 ## Note
 - May not work on all Unity games.
-- Modifies game memory, which can result in a ban. Use at your own risk.
-- Cringy code.
-- Trash technology.
+- Not work on x86, x86_64 games.
+- This module modifies game memory, which can result in a ban. Use at your own risk.

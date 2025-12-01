@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -17,78 +19,47 @@ public abstract class PreferenceFragmentMaterial extends PreferenceFragmentCompa
 
     @Override
     public void onDisplayPreferenceDialog(@NonNull Preference preference) {
-        if (getChildFragmentManager().findFragmentByTag(DIALOG_FRAGMENT_TAG) == null) {
-            PreferenceDialogFragmentMaterial f;
-            if (preference instanceof EditTextPreference) {
-                f = EditTextPreferenceDialogFragmentMaterial.newInstance(preference.getKey());
-            } else if (preference instanceof ListPreference) {
-                f = ListPreferenceDialogFragmentMaterial.newInstance(preference.getKey());
-            } else {
-                throw new IllegalArgumentException(
-                        "Cannot display dialog for an unknown Preference type: "
-                                + preference.getClass().getSimpleName()
-                                + ". Make sure to implement onPreferenceDisplayDialog() to handle "
-                                + "displaying a custom dialog for this Preference.");
-            }
-            f.show(getChildFragmentManager(), DIALOG_FRAGMENT_TAG);
+        boolean handled = false;
+        if (getCallbackFragment() instanceof OnPreferenceDisplayDialogCallback) {
+            handled = ((OnPreferenceDisplayDialogCallback) getCallbackFragment()).onPreferenceDisplayDialog(this, preference);
         }
-    }
 
-    /*@Override
-    public void onDisplayPreferenceDialog(@NonNull Preference preference) {
+        Fragment callbackFragment = this;
+        while (!handled && callbackFragment != null) {
+            if (callbackFragment instanceof OnPreferenceDisplayDialogCallback) {
+                handled = ((OnPreferenceDisplayDialogCallback) callbackFragment).onPreferenceDisplayDialog(this, preference);
+            }
+            callbackFragment = callbackFragment.getParentFragment();
+        }
+        if (!handled && getContext() instanceof OnPreferenceDisplayDialogCallback) {
+            handled = ((OnPreferenceDisplayDialogCallback) getContext()).onPreferenceDisplayDialog(this, preference);
+        }
+        if (!handled && getActivity() instanceof OnPreferenceDisplayDialogCallback) {
+            handled = ((OnPreferenceDisplayDialogCallback) getActivity()).onPreferenceDisplayDialog(this, preference);
+        }
+
+        if (handled) {
+            return;
+        }
+
+        var fm = getChildFragmentManager();
+        if (fm.findFragmentByTag(DIALOG_FRAGMENT_TAG) != null) {
+            return;
+        }
+
+        DialogFragment f;
         if (preference instanceof EditTextPreference) {
-            var etPref = (EditTextPreference) preference;
-            var container = new FrameLayout(requireContext());
-            getLayoutInflater().inflate(etPref.getDialogLayoutResource(), container);
-
-            var msgText = (TextView) container.findViewById(android.R.id.message);
-            var msg = etPref.getDialogMessage();
-            if (msg != null && msg.length() > 0) {
-                msgText.setText(msg);
-                msgText.setVisibility(View.VISIBLE);
-            } else {
-                msgText.setVisibility(View.GONE);
-            }
-
-            var et = (EditText) container.findViewById(android.R.id.edit);
-            et.setText(etPref.getText());
-            et.requestFocus();
-
-            var builder = new MaterialAlertDialogBuilder(requireContext());
-            builder.setIcon(etPref.getDialogIcon());
-            builder.setTitle(etPref.getDialogTitle());
-            builder.setView(container);
-            builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                etPref.setText(String.valueOf(et.getText()));
-            });
-            builder.setNegativeButton(android.R.string.cancel, null);
-
-            var dialog = builder.create();
-            et.postDelayed(() -> {
-                var imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(et, 0);
-            }, 200);
-            dialog.show();
+            f = EditTextPreferenceDialogFragmentMaterial.newInstance(preference.getKey());
         } else if (preference instanceof ListPreference) {
-            var listPref = (ListPreference) preference;
-            var entries = listPref.getEntries();
-            var entryValues = listPref.getEntryValues();
-
-            int curr = listPref.findIndexOfValue(listPref.getValue());
-
-            var builder = new MaterialAlertDialogBuilder(requireContext());
-            builder.setIcon(listPref.getDialogIcon());
-            builder.setTitle(preference.getTitle());
-            builder.setSingleChoiceItems(entries, curr, (di, which) -> {
-                listPref.setValue(String.valueOf(entryValues[which]));
-                di.dismiss();
-            });
-            builder.setPositiveButton(android.R.string.cancel, null);
-
-            var dialog = builder.create();
-            dialog.show();
+            f = ListPreferenceDialogFragmentMaterial.newInstance(preference.getKey());
         } else {
-            super.onDisplayPreferenceDialog(preference);
+            throw new IllegalArgumentException(
+                    "Cannot display dialog for an unknown Preference type: "
+                            + preference.getClass().getSimpleName()
+                            + ". Make sure to implement onPreferenceDisplayDialog() to handle "
+                            + "displaying a custom dialog for this Preference.");
         }
-    }/**/
+        //f.setTargetFragment(this, 0);
+        f.show(fm, DIALOG_FRAGMENT_TAG);
+    }
 }

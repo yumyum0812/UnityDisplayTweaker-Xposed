@@ -1,44 +1,34 @@
-package jp.miruku.unitydisplaytweaker.manager;
+package jp.miruku.unitydisplaytweaker.ui.fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
-import androidx.preference.SwitchPreference;
-import androidx.preference.SwitchPreferenceCompat;
-
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import jp.miruku.material.preference.PreferenceFragmentMaterial;
 import jp.miruku.unitydisplaytweaker.R;
-import jp.miruku.unitydisplaytweaker.module.ModuleConstants;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class SettingsFragment extends PreferenceFragmentMaterial implements SharedPreferences.OnSharedPreferenceChangeListener {
     private SharedPreferences mSp;
-    private OnInitializationFailedListener mFailedListener;
+    private boolean mInitialized = false;
 
-    private void callInitilizationFailed() {
-        if (mFailedListener != null) {
-            mFailedListener.OnInitializationFailed();
-        }
-    }
-
-    public void setInitializationFailedListener(@Nullable OnInitializationFailedListener listener) {
-        mFailedListener = listener;
+    public boolean isInitialized() {
+        return mInitialized;
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
         try {
             mSp = requireContext().getSharedPreferences("module_config", Context.MODE_WORLD_READABLE);
         } catch (SecurityException e) {
-            callInitilizationFailed();
+            mInitialized = true;
         }
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
     }
@@ -71,12 +61,16 @@ public class SettingsFragment extends PreferenceFragmentMaterial implements Shar
                 editor.putInt(key, (Integer) value);
             } else if (value instanceof Boolean) {
                 editor.putBoolean(key, (Boolean) value);
+            } else if (value instanceof Float) {
+                editor.putFloat(key, (Float) value);
+            } else if (value instanceof Long) {
+                editor.putLong(key, (Long) value);
+            } else if (value instanceof Set<?>) {
+                @SuppressWarnings("unchecked")
+                Set<String> set = (Set<String>) value;
+                editor.putStringSet(key, set);
             }
         }
         editor.apply();
-    }
-
-    public interface OnInitializationFailedListener {
-        void OnInitializationFailed();
     }
 }

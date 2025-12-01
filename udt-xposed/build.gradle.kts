@@ -46,5 +46,5 @@ dependencies {
     compileOnly(libs.xposed.api) { artifact { classifier = "sources" } }
     compileOnly(libs.xposed.api)
 
-    implementation(libs.annotation)
+    implementation(libs.androidx.annotation)
 }

@@ -15,8 +15,8 @@ import java.util.Objects;
 
 import de.robv.android.xposed.XC_MethodHook;
 
-public class OnCreateHook extends XC_MethodHook {
-    private boolean mAlreadyLoaded = false;
+public class ActivityHook extends XC_MethodHook {
+    private String mEntryClassName;
 
     private static Display getCurrentDisplay(@NonNull Context context) {
         var wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -47,20 +47,21 @@ public class OnCreateHook extends XC_MethodHook {
 
     @Override
     protected void afterHookedMethod(@NonNull MethodHookParam param) {
-        if (mAlreadyLoaded) return;
-        mAlreadyLoaded = true;
+        var className = param.thisObject.getClass().getName();
+        if (mEntryClassName != null && !className.equals(mEntryClassName)) return;
+        mEntryClassName = className;
 
-        var context = (Activity) Objects.requireNonNull(param.thisObject);
-        var config = MainModule.config;
+        var thiz = (Activity) Objects.requireNonNull(param.thisObject);
+        var config = XposedEntry.config;
 
         if (config.showToast) {
-            Toast.makeText(context, "UDT Loaded", Toast.LENGTH_SHORT).show();
+            Toast.makeText(thiz, "UDT Loaded", Toast.LENGTH_SHORT).show();
         }
 
-        var nativeRes = getNativeResolution(context);
-        var nativeRR = getNativeRefreshRate(context);
-        Log.i(ModuleConstants.LOG_TAG, "Native resolution: " + nativeRes.x + "x" + nativeRes.y);
-        Log.i(ModuleConstants.LOG_TAG, "Native refresh rate: " + nativeRR);
+        var nativeRes = getNativeResolution(thiz);
+        var nativeRR = getNativeRefreshRate(thiz);
+        Log.i(Constants.LOG_TAG, "Native resolution: " + nativeRes.x + "x" + nativeRes.y);
+        Log.i(Constants.LOG_TAG, "Native refresh rate: " + nativeRR);
 
         int w = config.useNativeResolution ? nativeRes.x : config.customWidth;
         int h = config.useNativeResolution ? nativeRes.y : config.customHeight;
@@ -72,14 +73,11 @@ public class OnCreateHook extends XC_MethodHook {
 
         var maxFps = config.useNativeRefreshRate ? Math.round(nativeRR) : config.maxFps;
 
-        Log.i(ModuleConstants.LOG_TAG, "Target resolution: " + w + "x" + h);
-        Log.i(ModuleConstants.LOG_TAG, "Target frame rate: " + maxFps);
-
         try {
             System.loadLibrary("udt-native");
-            MainModule.startApply(config.delay, config.changeResolution, w, h, config.changeMaxFps, maxFps);
+            XposedEntry.startApply(config.delay, config.changeResolution, w, h, config.changeMaxFps, maxFps);
         } catch (UnsatisfiedLinkError e) {
-            Log.e(ModuleConstants.LOG_TAG, e.getClass().getName() + ": " + e.getMessage());
+            Log.e(Constants.LOG_TAG, e.getClass().getName() + ": " + e.getMessage());
         }
     }
 }

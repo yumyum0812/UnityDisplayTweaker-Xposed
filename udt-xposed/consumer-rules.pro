@@ -1,3 +1,3 @@
--keep class jp.miruku.unitydisplaytweaker.module.MainModule
+-keep class jp.miruku.unitydisplaytweaker.module.XposedEntry
 
 -dontwarn de.robv.android.xposed.*

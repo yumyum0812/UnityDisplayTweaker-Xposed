@@ -40,17 +40,20 @@ android {
 }
 
 dependencies {
-    // Google
-    implementation(libs.material)
-
     // AndroidX
-    implementation(libs.preference)
-    implementation(libs.appcompat)
-    implementation(libs.activity)
-    implementation(libs.constraintlayout)
+    implementation(libs.androidx.preference)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.navigationfragment)
+    implementation(libs.androidx.navigationui)
 
-    implementation(project(":udt-xposed"))
+    // Google
+    implementation(libs.google.material)
+
+    // Project Modules
     implementation(project(":material-preference"))
+    implementation(project(":udt-xposed"))
 }
 
 android.applicationVariants.all {

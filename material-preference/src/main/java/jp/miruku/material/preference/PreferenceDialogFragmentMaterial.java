@@ -3,6 +3,10 @@ package jp.miruku.material.preference;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,20 +22,26 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.DialogPreference;
-import androidx.preference.PreferenceDialogFragmentCompat;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public abstract class PreferenceDialogFragmentMaterial extends DialogFragment implements DialogInterface.OnClickListener {
     protected static final String ARG_KEY = "key";
+    private static final String SAVE_STATE_TITLE = "PreferenceDialogFragment.title";
+    private static final String SAVE_STATE_POSITIVE_TEXT = "PreferenceDialogFragment.positiveText";
+    private static final String SAVE_STATE_NEGATIVE_TEXT = "PreferenceDialogFragment.negativeText";
+    private static final String SAVE_STATE_MESSAGE = "PreferenceDialogFragment.message";
+    private static final String SAVE_STATE_LAYOUT = "PreferenceDialogFragment.layout";
+    private static final String SAVE_STATE_ICON = "PreferenceDialogFragment.icon";
+
     private int mWhichButtonClicked;
     private DialogPreference mPreference;
-    private String mKey;
-    private CharSequence mTitle;
+    private CharSequence mDialogTitle;
     private CharSequence mPositiveButtonText;
     private CharSequence mNegativeButtonText;
     private CharSequence mDialogMessage;
     private int mDialogLayoutRes;
+    private BitmapDrawable mDialogIcon;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,26 +53,55 @@ public abstract class PreferenceDialogFragmentMaterial extends DialogFragment im
         }
 
         var fragment = (DialogPreference.TargetFragment) rawFragment;
-        mKey = requireArguments().getString(ARG_KEY);
-        if (mKey == null) {
-            throw new IllegalArgumentException("ARG_KEY is null");
-        }
+        String key = requireArguments().getString(ARG_KEY);
+        assert key != null;
 
-        mPreference = fragment.findPreference(mKey);
-        if (mPreference == null) {
-            throw new IllegalArgumentException("preference of " + mKey + " is null");
-        }
+        if (savedInstanceState == null) {
+            mPreference = fragment.findPreference(key);
+            if (mPreference == null) {
+                throw new IllegalArgumentException("preference of " + key + " is null");
+            }
+            mDialogTitle = mPreference.getDialogTitle();
+            mPositiveButtonText = mPreference.getPositiveButtonText();
+            mNegativeButtonText = mPreference.getNegativeButtonText();
+            mDialogMessage = mPreference.getDialogMessage();
+            mDialogLayoutRes = mPreference.getDialogLayoutResource();
 
-        mTitle = mPreference.getDialogTitle();
-        mPositiveButtonText = mPreference.getPositiveButtonText();
-        mNegativeButtonText = mPreference.getNegativeButtonText();
-        mDialogMessage = mPreference.getDialogMessage();
-        mDialogLayoutRes = mPreference.getDialogLayoutResource();
+            final Drawable icon = mPreference.getDialogIcon();
+            if (icon == null || icon instanceof BitmapDrawable) {
+                mDialogIcon = (BitmapDrawable) icon;
+            } else {
+                final Bitmap bitmap = Bitmap.createBitmap(icon.getIntrinsicWidth(), icon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                final Canvas canvas = new Canvas(bitmap);
+                icon.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                icon.draw(canvas);
+                mDialogIcon = new BitmapDrawable(getResources(), bitmap);
+            }
+        } else {
+            mDialogTitle = savedInstanceState.getCharSequence(SAVE_STATE_TITLE);
+            mPositiveButtonText = savedInstanceState.getCharSequence(SAVE_STATE_POSITIVE_TEXT);
+            mNegativeButtonText = savedInstanceState.getCharSequence(SAVE_STATE_NEGATIVE_TEXT);
+            mDialogMessage = savedInstanceState.getCharSequence(SAVE_STATE_MESSAGE);
+            mDialogLayoutRes = savedInstanceState.getInt(SAVE_STATE_LAYOUT, 0);
+            Bitmap bitmap = savedInstanceState.getParcelable(SAVE_STATE_ICON);
+            if (bitmap != null) {
+                mDialogIcon = new BitmapDrawable(getResources(), bitmap);
+            }
+        }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+
+        outState.putCharSequence(SAVE_STATE_TITLE, mDialogTitle);
+        outState.putCharSequence(SAVE_STATE_POSITIVE_TEXT, mPositiveButtonText);
+        outState.putCharSequence(SAVE_STATE_NEGATIVE_TEXT, mNegativeButtonText);
+        outState.putCharSequence(SAVE_STATE_MESSAGE, mDialogMessage);
+        outState.putInt(SAVE_STATE_LAYOUT, mDialogLayoutRes);
+        if (mDialogIcon != null) {
+            outState.putParcelable(SAVE_STATE_ICON, mDialogIcon.getBitmap());
+        }
     }
 
     @NonNull
@@ -71,7 +110,8 @@ public abstract class PreferenceDialogFragmentMaterial extends DialogFragment im
         mWhichButtonClicked = DialogInterface.BUTTON_NEGATIVE;
 
         var builder = new MaterialAlertDialogBuilder(requireContext());
-        builder.setTitle(mTitle);
+        builder.setTitle(mDialogTitle);
+        builder.setIcon(mDialogIcon);
         builder.setPositiveButton(mPositiveButtonText, this);
         builder.setNegativeButton(mNegativeButtonText, this);
 
@@ -98,8 +138,9 @@ public abstract class PreferenceDialogFragmentMaterial extends DialogFragment im
     protected void onPrepareDialogBuilder(@NonNull AlertDialog.Builder builder) {}
 
     private void requestInputMethod(@NonNull Dialog dialog) {
-        Window window = dialog.getWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Window window = dialog.getWindow();
+            assert window != null;
             Api30Impl.showIme(window);
         } else {
             scheduleShowSoftInput();
@@ -159,13 +200,14 @@ public abstract class PreferenceDialogFragmentMaterial extends DialogFragment im
     public abstract void onDialogClosed(boolean positiveResult);
 
     @RequiresApi(Build.VERSION_CODES.R)
-    private static class Api30Impl {
-        // Prevent instantiation.
-        private Api30Impl() {}
-
+    private static final class Api30Impl {
         @DoNotInline
         static void showIme(@NonNull Window dialogWindow) {
-            dialogWindow.getDecorView().getWindowInsetsController().show(WindowInsets.Type.ime());
+            var dv = dialogWindow.getDecorView();
+            var ic = dv.getWindowInsetsController();
+            assert ic != null;
+
+            ic.show(WindowInsets.Type.ime());
         }
     }
 }

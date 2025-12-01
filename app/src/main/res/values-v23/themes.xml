@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.MyModule" parent="Base.Theme.MyModule">
+    <style name="Theme.ModuleManager" parent="Base.Theme.ModuleManager">
         <item name="android:navigationBarColor">?attr/background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>

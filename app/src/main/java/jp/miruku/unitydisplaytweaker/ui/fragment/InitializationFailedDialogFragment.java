@@ -1,4 +1,4 @@
-package jp.miruku.unitydisplaytweaker.manager;
+package jp.miruku.unitydisplaytweaker.ui.fragment;
 
 import android.app.Dialog;
 import android.os.Bundle;

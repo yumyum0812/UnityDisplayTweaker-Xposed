@@ -9,7 +9,7 @@ public class Preferences {
     private final XSharedPreferences mPrefs;
 
     public Preferences(@NonNull String group) {
-        mPrefs = new XSharedPreferences(ModuleConstants.MANAGER_PACKAGE, group);
+        mPrefs = new XSharedPreferences(Constants.MANAGER_PACKAGE, group);
         mPrefs.makeWorldReadable();
         mPrefs.reload();
     }
