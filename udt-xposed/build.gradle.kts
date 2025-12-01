@@ -12,7 +12,7 @@ android {
     defaultConfig {
         minSdk = 24
 
-        consumerProguardFiles("consumer-rules.pro")
+        consumerProguardFiles("proguard-rules.pro")
 
         ndk {
             abiFilters.add("armeabi-v7a")
@@ -44,7 +44,7 @@ android {
 
 dependencies {
     compileOnly(libs.xposed.api) { artifact { classifier = "sources" } }
-    compileOnly(libs.xposed.api)
+    compileOnlyApi(libs.xposed.api)
 
     implementation(libs.androidx.annotation)
 }

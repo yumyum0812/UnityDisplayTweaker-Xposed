@@ -33,5 +33,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "My Module"
+rootProject.name = "UnityDisplayTweaker"
 include(":app")

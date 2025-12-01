@@ -45,8 +45,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.navigationfragment)
-    implementation(libs.androidx.navigationui)
+//    implementation(libs.androidx.navigationfragment)
+//    implementation(libs.androidx.navigationui)
 
     // Google
     implementation(libs.google.material)
