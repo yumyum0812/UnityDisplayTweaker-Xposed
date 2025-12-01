@@ -6,9 +6,9 @@
 
 #include <xdl.h>
 
-#include "proc/MemPatch.h"
+#include "proc/mem_patch.h"
 #include "utils/api_macros.h"
-#include "utils/log.h"
+#include "utils/logging.h"
 #include "utils/lib_finder.h"
 #include "unity/engine/screen_manager.h"
 #include "unity/il2cpp/fullscreen_mode.h"
@@ -96,9 +96,17 @@ JNIEXPORT JNICALL jint JNI_OnLoad(JavaVM* vm, void*) {
 }
 
 extern "C"
-EXPORTSYM void LoadFromExternal() {
+API_EXPORT
+void LoadFromExternal() {
     std::thread([] {
+        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+
         ApplyConfig cfg;
+        cfg.changeResolution = true;
+        cfg.width = 640;
+        cfg.height = 480;
+        cfg.changeMaxFps = true;
+        cfg.maxFps = 30;
         Apply(cfg);
     }).detach();
 }
