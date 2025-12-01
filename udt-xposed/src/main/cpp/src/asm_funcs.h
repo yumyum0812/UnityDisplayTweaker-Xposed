@@ -3,8 +3,8 @@
 #include "utils/arm/arm32_util.h"
 #include "utils/arm/arm64_util.h"
 #include "utils/arm/thumb2_util.h"
-#include "utils/log.h"
-#include "proc/MemPatch.h"
+#include "utils/logging.h"
+#include "proc/mem_patch.h"
 #include "module_constants.h"
 #include "target_arch.h"
 

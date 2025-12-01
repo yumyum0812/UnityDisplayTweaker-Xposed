@@ -14,7 +14,7 @@
 #include <sys/mman.h>
 #include <bits/sysconf.h>
 
-#include "ProcMap.h"
+#include "proc_map.h"
 
 
 static inline size_t GetPageSize() {

@@ -1,3 +1,3 @@
 #pragma once
 
-#define EXPORTSYM __attribute__((visibility("default"))) [[maybe_unused]]
+#define API_EXPORT __attribute__((visibility("default"))) [[maybe_unused]]

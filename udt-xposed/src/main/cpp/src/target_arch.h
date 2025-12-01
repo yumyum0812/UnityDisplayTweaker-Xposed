@@ -9,11 +9,11 @@
     #undef TARGET_ARCH_NAME
     #define TARGET_ARM64 1
     #define TARGET_ARCH_NAME "arm64"
-#elif defined(__arm__) || defined(_M_ARM)
+#elif defined(__ARM_ARCH_7A__)
     #undef TARGET_ARMV7
     #undef TARGET_ARCH_NAME
     #define TARGET_ARMV7 1
-    #define TARGET_ARCH_NAME "arm32"
+    #define TARGET_ARCH_NAME "armv7a"
 #else
     #error "Tried to compile with unsupported ABI!"
 #endif

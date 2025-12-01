@@ -4,18 +4,20 @@
 #include <format>
 #include <android/log.h>
 
-#define DISABLE_DEBUG_RELEASE 0
+#define LOGGING_DISABLE_DEBUG_RELEASE 1
+
 
 namespace Logging {
     template<typename... Args>
     void Print(int priority, std::string_view tag, std::string_view fmt, Args&&... args) {
         std::string msg = std::vformat(fmt, std::make_format_args(args...));
-        __android_log_print(priority, tag.data(), "%s", msg.c_str());
+        __android_log_write(priority, tag.data(), msg.c_str());
     }
 
-#if defined(NDEBUG) && DISABLE_DEBUG_RELEASE
+#if defined(NDEBUG) && LOGGING_DISABLE_DEBUG_RELEASE
     template<typename... Args>
-    constexpr void Debug(std::string_view tag, std::string_view fmt, Args&&... args) {}
+    __attribute__((always_inline))
+    inline void Debug(std::string_view tag, std::string_view fmt, Args&&... args) {}
 #else
     template<typename... Args>
     void Debug(std::string_view tag, std::string_view fmt, Args&&... args) {
@@ -41,5 +43,10 @@ namespace Logging {
     template<typename... Args>
     void Error(std::string_view tag, std::string_view fmt, Args&&... args) {
         Print(ANDROID_LOG_ERROR, tag, fmt, std::forward<Args>(args)...);
+    }
+
+    template<typename... Args>
+    void Fatal(std::string_view tag, std::string_view fmt, Args&&... args) {
+        Print(ANDROID_LOG_FATAL, tag, fmt, std::forward<Args>(args)...);
     }
 }

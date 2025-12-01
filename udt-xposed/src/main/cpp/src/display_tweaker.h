@@ -5,10 +5,10 @@
 #include "unity/il2cpp/fullscreen_mode.h"
 #include "unity/il2cpp/refresh_rate.h"
 #include "module_constants.h"
-#include "utils/log.h"
+#include "utils/logging.h"
 #include "asm_funcs.h"
 
-#define UDT_FORCE_OPCODE_METHOD 1
+#define UDT_FORCE_OPCODE_METHOD 0
 
 
 namespace DisplayTweaker {
@@ -90,7 +90,7 @@ namespace DisplayTweaker {
 #if !UDT_FORCE_OPCODE_METHOD
         if (Screen_SetResolution) {
             Screen_SetResolution(width, height, FullScreenMode::FullScreenWindow, 0);
-            AsmUtil::DisableVoidFunc((uintptr_t) Screen_SetResolution);
+            AsmFuncs::DisableVoidFunc((uintptr_t) Screen_SetResolution);
 
             Logging::Info(ModuleConstants::LOG_TAG, "Changed resolution successfully. (1)");
             success = true;
@@ -98,7 +98,7 @@ namespace DisplayTweaker {
 
         if (Screen_SetResolution_Injected) {
             Screen_SetResolution_Injected(width, height, FullScreenMode::FullScreenWindow, {0, 0});
-            AsmUtil::DisableVoidFunc((uintptr_t) Screen_SetResolution_Injected);
+            AsmFuncs::DisableVoidFunc((uintptr_t) Screen_SetResolution_Injected);
 
             Logging::Info(ModuleConstants::LOG_TAG, "Changed resolution successfully. (2)");
             success = true;
@@ -108,7 +108,7 @@ namespace DisplayTweaker {
         if (!success && Screen_get_width) {
             auto getWidthAddr = (uintptr_t) Screen_get_width;
 
-            // 先頭の命令4つからGetScreenManagerの呼び出しを期待
+            // 先頭の命令8つからGetScreenManagerの呼び出しを期待
             auto getScreenManager = (ScreenManager*(*)()) AsmFuncs::FindSubroutineCall(getWidthAddr, 8);
             if (!getScreenManager) {
                 Logging::Debug(ModuleConstants::LOG_TAG, "Couldn't find call of GetScreenManager!");
