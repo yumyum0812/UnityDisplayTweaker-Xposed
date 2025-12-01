@@ -1,4 +1,8 @@
 # UnityDisplayTweaker
+![Android](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white)
+![Xposed: 93+](https://img.shields.io/badge/Xposed-93%2B-blue)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 ## Overview
 UnityDisplayTweaker is a Xposed module that allows you to modify the resolution and maximum FPS of Unity (IL2CPP) Android games.
 
