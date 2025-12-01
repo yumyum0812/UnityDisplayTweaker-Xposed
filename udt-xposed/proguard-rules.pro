@@ -20,5 +20,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+-dontwarn de.robv.android.xposed.**
+-keep class de.robv.android.xposed.**
+
 -keep class jp.miruku.unitydisplaytweaker.module.XposedEntry
--dontwarn de.robv.android.xposed.*
