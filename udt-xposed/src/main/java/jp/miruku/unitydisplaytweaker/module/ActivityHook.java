@@ -54,6 +54,8 @@ public class ActivityHook extends XC_MethodHook {
         var thiz = (Activity) Objects.requireNonNull(param.thisObject);
         var config = XposedEntry.config;
 
+        Log.i(Constants.LOG_TAG, "UDT Loaded");
+
         if (config.showToast) {
             Toast.makeText(thiz, "UDT Loaded", Toast.LENGTH_SHORT).show();
         }
