@@ -34,9 +34,9 @@
 
         <SwitchPreferenceCompat
             android:key="use_native_resolution"
-            android:title="ネイティブ解像度を使用"
+            android:title="@string/title_use_native_resolution"
             android:dependency="change_resolution"
-            android:summary="カスタム解像度の代わりにネイティブ解像度を使用します"
+            android:summary="@string/summary_use_native_resolution"
             android:disableDependentsState="true"
             android:defaultValue="false" />
 
