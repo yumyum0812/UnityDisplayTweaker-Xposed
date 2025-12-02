@@ -15,7 +15,7 @@ android {
         minSdk = 24
         targetSdk = 36
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1.0"
 
         ndk {
             abiFilters.add("armeabi-v7a")
@@ -45,8 +45,6 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-//    implementation(libs.androidx.navigationfragment)
-//    implementation(libs.androidx.navigationui)
 
     // Google
     implementation(libs.google.material)
