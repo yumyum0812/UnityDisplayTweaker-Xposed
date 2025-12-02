@@ -18,8 +18,9 @@ This is a Xposed module that allows you to modify the resolution and maximum FPS
 ## Guide
 1. Download and install the APK.
 2. Enable this module in your Xposed manager.
-3. Add the game into module scope.
-4. Launch the game and enjoy!
+3. Add your game into module scope.
+4. Open the module app and adjust the settings to your liking.
+5. Launch your game and enjoy!
 
 ## ️⚠️ ️Caution
 - May not work on all Unity games.
