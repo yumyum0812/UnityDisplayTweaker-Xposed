@@ -3,7 +3,7 @@
 ![Xposed: 93+](https://img.shields.io/badge/Xposed-93%2B-blue)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-[English](./README.md) | **日本語**
+[English](./README.md) | 日本語
 
 ## 概要
 これは Android 上で動作する Unity（IL2CPP）製ゲームの **解像度** や **最大FPS** を変更できる Xposed モジュールです。
