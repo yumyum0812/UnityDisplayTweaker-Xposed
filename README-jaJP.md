@@ -34,4 +34,4 @@
 
 ## 参考
 このプロジェクトは、以下のプロジェクトに感化されて開発されました：
-- [UnityFPSUnlocker](https://github.com/hexstr/UnityFPSUnlocker/tree/zygisk_module/UnityFPSUnlocker/)
+- [UnityFPSUnlocker](https://github.com/hexstr/UnityFPSUnlocker/)

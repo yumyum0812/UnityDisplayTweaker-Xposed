@@ -34,5 +34,5 @@ It can be useful if you want more control over graphics-related settings.
 
 ## Credits
 This project was inspired by the following work:
-- [UnityFPSUnlocker](https://github.com/hexstr/UnityFPSUnlocker/tree/zygisk_module/UnityFPSUnlocker/)
+- [UnityFPSUnlocker](https://github.com/hexstr/UnityFPSUnlocker/)
 
