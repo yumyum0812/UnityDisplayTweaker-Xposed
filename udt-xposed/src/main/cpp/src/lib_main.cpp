@@ -88,8 +88,8 @@ JNIEXPORT JNICALL jint JNI_OnLoad(JavaVM* vm, void*) {
             {"startApply", "(FZIIZI)V", (void*) StartApply},
     };
 
-    if (env->RegisterNatives(clazz, nativeMethods, sizeof nativeMethods / sizeof nativeMethods[0]) < 0) {
-        return JNI_ERR;
+    if (jint rc = env->RegisterNatives(clazz, nativeMethods, sizeof nativeMethods / sizeof nativeMethods[0]); rc != JNI_OK) {
+        return rc;
     }
 
     return JNI_VERSION_1_6;
