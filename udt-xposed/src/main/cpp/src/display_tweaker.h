@@ -17,7 +17,6 @@ namespace DisplayTweaker {
     void (* Screen_SetResolution)(int width, int height, FullScreenMode mode, int rr) = nullptr;
     void (* Screen_SetResolution_Injected)(int width, int height, FullScreenMode mode, const RefreshRate& rr) = nullptr;
     int (* Screen_get_width)() = nullptr;
-
     void (* Application_set_targetFrameRate)(int value);
 
     bool Init() {
