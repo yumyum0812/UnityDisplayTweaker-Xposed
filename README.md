@@ -30,7 +30,7 @@ It can be useful if you want more control over graphics-related settings.
 2. Enable the module in your Xposed manager.
 3. Add your target game to the module scope.
 4. Open the module app and adjust the settings to your liking.
-5. Launch thd game and enjoy!
+5. Launch the game and enjoy!
 
 ## Credits
 This project was inspired by the following work:
