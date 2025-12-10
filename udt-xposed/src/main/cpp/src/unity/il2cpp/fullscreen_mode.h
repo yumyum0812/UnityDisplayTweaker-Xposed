@@ -1,6 +1,9 @@
 #pragma once
 
-// UnityEngine.FullScreenMode
+/* References:
+ *  Scripting API: FullScreenMode
+ *  https://docs.unity3d.com/ScriptReference/FullScreenMode.html
+ */
 
 enum FullScreenMode : int {
     ExclusiveFullScreen = 0,
