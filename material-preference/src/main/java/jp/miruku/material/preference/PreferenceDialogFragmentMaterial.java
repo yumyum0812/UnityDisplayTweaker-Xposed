@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.os.BundleCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.DialogPreference;
 
@@ -83,7 +84,7 @@ public abstract class PreferenceDialogFragmentMaterial extends DialogFragment im
             mNegativeButtonText = savedInstanceState.getCharSequence(SAVE_STATE_NEGATIVE_TEXT);
             mDialogMessage = savedInstanceState.getCharSequence(SAVE_STATE_MESSAGE);
             mDialogLayoutRes = savedInstanceState.getInt(SAVE_STATE_LAYOUT, 0);
-            Bitmap bitmap = savedInstanceState.getParcelable(SAVE_STATE_ICON);
+            var bitmap = BundleCompat.getParcelable(savedInstanceState, SAVE_STATE_ICON, Bitmap.class);
             if (bitmap != null) {
                 mDialogIcon = new BitmapDrawable(getResources(), bitmap);
             }
@@ -166,7 +167,7 @@ public abstract class PreferenceDialogFragmentMaterial extends DialogFragment im
     }
 
     @Nullable
-    protected View onCreateDialogView(@NonNull Context context) {
+    protected View onCreateDialogView(@NonNull Context ignoredContext) {
         final int resId = mDialogLayoutRes;
         if (resId == 0) {
             return null;
