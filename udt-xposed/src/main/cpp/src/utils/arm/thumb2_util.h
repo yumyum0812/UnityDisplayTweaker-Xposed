@@ -1,16 +1,15 @@
+/*
+ * Reference:
+ *   Arm Architecture Reference Manual for A-profile Architecture
+ *   (DDI 0487L.b)
+ *   https://developer.arm.com/documentation/ddi0487/lb/
+ */
+
 #pragma once
 
 #include <cstdint>
 
 #include "bit_util.h"
-
-// Source:
-// DDI0487L_b_a-profile_architecture_reference_manual.pdf
-
-// Pages:
-// T32 Instruction set encoding: 9925
-// B: 10098
-// BL, BLX: 10115
 
 namespace Thumb2Util {
     uint16_t ReadInstruction(const uint8_t* p) {

@@ -1,3 +1,10 @@
+/*
+ * Reference:
+ *   Arm Architecture Reference Manual for A-profile Architecture
+ *   (DDI 0487L.b)
+ *   https://developer.arm.com/documentation/ddi0487/lb/
+ */
+
 #pragma once
 
 #include <type_traits>
