@@ -3,26 +3,36 @@
 ![Xposed: 93+](https://img.shields.io/badge/Xposed-93%2B-blue)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
+English | [日本語](./README-jaJP.md)
+
 ## Overview
-This is a Xposed module that allows you to modify the resolution and maximum FPS of Unity (IL2CPP) Android games.
+This is an Xposed module that allows you to adjust the **rendering resolution** and **maximum FPS** of Unity (IL2CPP) games running on Android devices.  
+It can be useful if you want more control over graphics-related settings.
 
-## Supported Device Environments
-- **OS**: Android
-- **Minimum Xposed API Version**: 93
+## Warning
+- This module does **not** work with every Unity game.
+- Mono and x86/x86_64 builds are not supported.
+- This module modifies internal game behavior and **may be detected** by some titles, which could result in **account restrictions**.
 
-## Supported Game Environments
-- **Engine**: Unity
+## Supported Requirements
+
+### Device Requirements
+- **Android Version**: 7.0 (API 24) or higher
+- **Xposed API**: 93 or higher
+
+### Game Requirements
+- **Game Engine**: Unity
 - **Runtime**: IL2CPP
 - **ABI**: armeabi-v7a / arm64-v8a
 
-## Guide
-1. Download and install the APK.
-2. Enable this module in your Xposed manager.
-3. Add your game into module scope.
+## Installation
+1. Download and install the module APK.
+2. Enable the module in your Xposed manager.
+3. Add your target game to the module scope.
 4. Open the module app and adjust the settings to your liking.
-5. Launch your game and enjoy!
+5. Launch thd game and enjoy!
 
-## ️⚠️ ️Caution
-- May not work on all Unity games.
-- Not compatible with **x86**, or **x86_64** games.
-- This module modifies game memory, which can result in a **ban** or **detection as cheating**. Use at your own risk!
+## Credits
+This project was inspired by the following work:
+- [UnityFPSUnlocker](https://github.com/hexstr/UnityFPSUnlocker/)
+
