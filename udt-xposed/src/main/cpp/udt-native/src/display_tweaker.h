@@ -30,7 +30,7 @@ namespace DisplayTweaker {
 
         il2cpp_resolve_icall = (decltype(il2cpp_resolve_icall)) xdl_sym(handle, "il2cpp_resolve_icall", nullptr);
         if (!il2cpp_resolve_icall) {
-            ModuleLog::W("Couldn't resolve symbol: il2cpp_resolve_icall");
+            ModuleLog::E("Couldn't resolve symbol: il2cpp_resolve_icall");
             return false;
         }
 
