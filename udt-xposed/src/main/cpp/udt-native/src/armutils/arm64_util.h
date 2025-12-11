@@ -9,7 +9,7 @@
 
 #include <cstdint>
 
-#include "bit_util.h"
+#include "internal/bit_util.h"
 
 namespace Arm64Util {
     uint32_t ReadInstruction(const uint8_t* p) {

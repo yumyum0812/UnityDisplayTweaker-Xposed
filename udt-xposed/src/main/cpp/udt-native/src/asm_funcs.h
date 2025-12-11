@@ -1,12 +1,12 @@
 #pragma once
 
-#include "utils/arm/arm32_util.h"
-#include "utils/arm/arm64_util.h"
-#include "utils/arm/thumb2_util.h"
-#include "utils/logging.h"
+#include "armutils/arm32_util.h"
+#include "armutils/arm64_util.h"
+#include "armutils/thumb2_util.h"
+#include "utils/logcat.h"
 #include "proc/mem_patch.h"
-#include "module_constants.h"
 #include "target_arch.h"
+#include "module_log.h"
 
 namespace AsmFuncs {
     uintptr_t FindSubroutineCallT2(uintptr_t funAddr, int performs) {
@@ -15,7 +15,7 @@ namespace AsmFuncs {
         size_t offset = 0;
 
         for (int i = 0; i < performs; i++) {
-            Logging::Debug(ModuleConstants::LOG_TAG, "Performing (T2): 0x{:X}", offset);
+            ModuleLog::D("T2: Performing: 0x{:X}", offset);
 
             uintptr_t instrAddr = funAddr + offset;
             uintptr_t pc = instrAddr + 4;
@@ -46,7 +46,7 @@ namespace AsmFuncs {
         for (int i = 0; i < performs; i++) {
             size_t offset = i * 4;
 
-            Logging::Debug(ModuleConstants::LOG_TAG, "Performing (A32): 0x{:X}", offset);
+            ModuleLog::D("A32: Performing: 0x{:X}", offset);
 
             uintptr_t instrAddr = funAddr + offset;
             uintptr_t pc = instrAddr + 8;
@@ -69,7 +69,7 @@ namespace AsmFuncs {
 
         for (int i = 0; i < performs; i++) {
             size_t offset = i * 4;
-            Logging::Debug(ModuleConstants::LOG_TAG, "Performing (A64): 0x{:X}", offset);
+            ModuleLog::D("A64: Performing: 0x{:X}", offset);
 
             uintptr_t instrAddr = funAddr + offset;
             uint32_t instr = Arm64Util::ReadInstruction((uint8_t*) instrAddr);

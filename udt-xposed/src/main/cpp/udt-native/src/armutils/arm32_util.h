@@ -11,7 +11,7 @@
 #include <cstdint>
 #include <bit>
 
-#include "bit_util.h"
+#include "internal/bit_util.h"
 
 namespace Arm32Util {
     uint32_t ReadInstruction(const uint8_t* p) {
