@@ -107,10 +107,10 @@ namespace DisplayTweaker {
         if (!success && Screen_get_width) {
             auto getWidthAddr = (uintptr_t) Screen_get_width;
 
-            // 先頭の命令8つからGetScreenManagerの呼び出しを期待
+            // 先頭の命令8つから GetScreenManager の呼び出しを期待
             auto getScreenManager = (ScreenManager*(*)()) AsmFuncs::FindSubroutineCall(getWidthAddr, 8);
             if (!getScreenManager) {
-                ModuleLog::D("Couldn't find call of GetScreenManager!");
+                ModuleLog::E("Couldn't find call of GetScreenManager!");
                 return false;
             }
 
@@ -118,7 +118,7 @@ namespace DisplayTweaker {
 
             ScreenManager* sm = getScreenManager();
             if (!sm) {
-                ModuleLog::D("Couldn't obtain ScreenManager!");
+                ModuleLog::E("Couldn't obtain ScreenManager!");
                 return false;
             }
 
