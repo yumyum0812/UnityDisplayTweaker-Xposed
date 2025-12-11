@@ -4,12 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import de.robv.android.xposed.XSharedPreferences;
+import jp.miruku.unitydisplaytweaker.module.common.Constants;
 
 public class Preferences {
     private final XSharedPreferences mPrefs;
 
     public Preferences(@NonNull String group) {
-        mPrefs = new XSharedPreferences(Constants.MANAGER_PACKAGE, group);
+        mPrefs = new XSharedPreferences(Constants.MANAGER_PACKAGE_NAME, group);
         mPrefs.makeWorldReadable();
         mPrefs.reload();
     }
