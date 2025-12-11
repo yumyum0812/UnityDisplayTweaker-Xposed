@@ -4,9 +4,9 @@
 #include "unity/engine/screen_manager.h"
 #include "unity/il2cpp/fullscreen_mode.h"
 #include "unity/il2cpp/refresh_rate.h"
-#include "module_constants.h"
-#include "utils/logging.h"
+#include "utils/logcat.h"
 #include "asm_funcs.h"
+#include "module_log.h"
 
 #define UDT_FORCE_OPCODE_METHOD 0
 
@@ -22,19 +22,19 @@ namespace DisplayTweaker {
     bool Init() {
         void* handle = xdl_open("libil2cpp.so", XDL_DEFAULT);
         if (!handle) {
-            Logging::Warn(ModuleConstants::LOG_TAG, "Couldn't obtain handle of libil2cpp.so");
+            ModuleLog::E("Couldn't obtain handle of libil2cpp.so");
             return false;
         }
 
-        Logging::Debug(ModuleConstants::LOG_TAG, "libil2cpp.so found.");
+        ModuleLog::D("libil2cpp.so found.");
 
         il2cpp_resolve_icall = (decltype(il2cpp_resolve_icall)) xdl_sym(handle, "il2cpp_resolve_icall", nullptr);
         if (!il2cpp_resolve_icall) {
-            Logging::Warn(ModuleConstants::LOG_TAG, "Couldn't resolve symbol: il2cpp_resolve_icall");
+            ModuleLog::W("Couldn't resolve symbol: il2cpp_resolve_icall");
             return false;
         }
 
-        Logging::Debug(ModuleConstants::LOG_TAG, "il2cpp_resolve_icall: 0x{:X}", (uintptr_t) il2cpp_resolve_icall);
+        ModuleLog::D("il2cpp_resolve_icall: 0x{:X}", (uintptr_t) il2cpp_resolve_icall);
 
         return true;
     }
@@ -49,13 +49,13 @@ namespace DisplayTweaker {
         Screen_get_width = (decltype(Screen_get_width)) il2cpp_resolve_icall("UnityEngine.Screen::get_width");
 
         if (Screen_SetResolution) {
-            Logging::Debug(ModuleConstants::LOG_TAG, "Screen_SetResolution: 0x{:X}", (uintptr_t) Screen_SetResolution);
+            ModuleLog::D("Screen_SetResolution: 0x{:X}", (uintptr_t) Screen_SetResolution);
         }
         if (Screen_SetResolution_Injected) {
-            Logging::Debug(ModuleConstants::LOG_TAG, "Screen_SetResolution_Injected: 0x{:X}", (uintptr_t) Screen_SetResolution_Injected);
+            ModuleLog::D("Screen_SetResolution_Injected: 0x{:X}", (uintptr_t) Screen_SetResolution_Injected);
         }
         if (Screen_get_width) {
-            Logging::Debug(ModuleConstants::LOG_TAG, "Screen_get_width: 0x{:X}", (uintptr_t) Screen_get_width);
+            ModuleLog::D("Screen_get_width: 0x{:X}", (uintptr_t) Screen_get_width);
         }
 
         if (Screen_SetResolution || Screen_SetResolution_Injected || Screen_get_width) {
@@ -73,7 +73,7 @@ namespace DisplayTweaker {
         Application_set_targetFrameRate = (decltype(Application_set_targetFrameRate)) il2cpp_resolve_icall("UnityEngine.Application::set_targetFrameRate");
 
         if (Application_set_targetFrameRate) {
-            Logging::Debug(ModuleConstants::LOG_TAG, "set_targetFrameRate: 0x{:X}", (uintptr_t) Application_set_targetFrameRate);
+            ModuleLog::D("set_targetFrameRate: 0x{:X}", (uintptr_t) Application_set_targetFrameRate);
         }
 
         if (Application_set_targetFrameRate) {
@@ -91,7 +91,7 @@ namespace DisplayTweaker {
             Screen_SetResolution(width, height, FullScreenMode::FullScreenWindow, 0);
             AsmFuncs::DisableVoidFunc((uintptr_t) Screen_SetResolution);
 
-            Logging::Info(ModuleConstants::LOG_TAG, "Changed resolution successfully. (1)");
+            ModuleLog::D("Changed resolution successfully. (1)");
             success = true;
         }
 
@@ -99,7 +99,7 @@ namespace DisplayTweaker {
             Screen_SetResolution_Injected(width, height, FullScreenMode::FullScreenWindow, {0, 0});
             AsmFuncs::DisableVoidFunc((uintptr_t) Screen_SetResolution_Injected);
 
-            Logging::Info(ModuleConstants::LOG_TAG, "Changed resolution successfully. (2)");
+            ModuleLog::D("Changed resolution successfully. (2)");
             success = true;
         }
 #endif
@@ -110,24 +110,24 @@ namespace DisplayTweaker {
             // 先頭の命令8つからGetScreenManagerの呼び出しを期待
             auto getScreenManager = (ScreenManager*(*)()) AsmFuncs::FindSubroutineCall(getWidthAddr, 8);
             if (!getScreenManager) {
-                Logging::Debug(ModuleConstants::LOG_TAG, "Couldn't find call of GetScreenManager!");
+                ModuleLog::D("Couldn't find call of GetScreenManager!");
                 return false;
             }
 
-            Logging::Debug(ModuleConstants::LOG_TAG, "GetScreenManager: 0x{:X}", (uintptr_t) getScreenManager);
+            ModuleLog::D("GetScreenManager: 0x{:X}", (uintptr_t) getScreenManager);
 
             ScreenManager* sm = getScreenManager();
             if (!sm) {
-                Logging::Debug(ModuleConstants::LOG_TAG, "Couldn't obtain ScreenManager!");
+                ModuleLog::D("Couldn't obtain ScreenManager!");
                 return false;
             }
 
-            Logging::Debug(ModuleConstants::LOG_TAG, "ScreenManager: 0x{:X}", (uintptr_t) sm);
+            ModuleLog::D("ScreenManager: 0x{:X}", (uintptr_t) sm);
 
             sm->RequestResolution(width, height, true, 0);
             AsmFuncs::DisableVoidFunc((uintptr_t) sm->vtable->RequestResolution);
 
-            Logging::Info(ModuleConstants::LOG_TAG, "Changed resolution successfully. (3)");
+            ModuleLog::I("Changed resolution successfully. (3)");
             return true;
         }
 
@@ -138,7 +138,7 @@ namespace DisplayTweaker {
         if (Application_set_targetFrameRate) {
             Application_set_targetFrameRate(target);
             AsmFuncs::DisableVoidFunc((uintptr_t) Application_set_targetFrameRate);
-            Logging::Info(ModuleConstants::LOG_TAG, "Changed target framerate successfully. (1)");
+            ModuleLog::I("Changed target framerate successfully. (1)");
             return true;
         }
         return false;
