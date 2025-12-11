@@ -9,7 +9,7 @@
 
 #include <cstdint>
 
-#include "bit_util.h"
+#include "internal/bit_util.h"
 
 namespace Thumb2Util {
     uint16_t ReadInstruction(const uint8_t* p) {
