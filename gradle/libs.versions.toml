@@ -1,5 +1,5 @@
 [versions]
-agp = "8.13.1"
+agp = "8.13.2"
 xposed-api = "82"
 androidx-annotation = "1.9.1"
 androidx-appcompat = "1.7.1"
