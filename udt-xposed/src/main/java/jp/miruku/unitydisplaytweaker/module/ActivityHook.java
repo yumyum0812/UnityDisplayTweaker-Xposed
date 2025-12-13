@@ -25,7 +25,7 @@ public class ActivityHook extends XC_MethodHook {
 
         ModuleLog.i("Module loaded");
 
-        if (config.showToast) {
+        if (config.showToastOnLoad) {
             Toast.makeText(activity, "UDT loaded", Toast.LENGTH_SHORT).show();
         }
 
@@ -38,15 +38,15 @@ public class ActivityHook extends XC_MethodHook {
         int w = config.useNativeResolution ? nativeRes.x : config.customWidth;
         int h = config.useNativeResolution ? nativeRes.y : config.customHeight;
 
-        if (config.changeResolutionScale) {
-            w = (int)(w * config.widthScale);
-            h = (int)(h * config.heightScale);
+        if (config.useResolutionScale) {
+            w = Math.round(w * config.widthScale);
+            h = Math.round(h * config.heightScale);
         }
 
-        var maxFps = config.useNativeRefreshRate ? Math.round(nativeRR) : config.maxFps;
+        var maxFps = config.useNativeRefreshRate ? Math.round(nativeRR) : config.fpsCap;
         try {
             System.loadLibrary("udt-native");
-            XposedEntry.startApply(config.delay, config.changeResolution, w, h, config.changeMaxFps, maxFps);
+            XposedEntry.startApply(config.delayApply, config.changeResolution, w, h, config.changeFpsCap, maxFps);
         } catch (UnsatisfiedLinkError e) {
             ModuleLog.e("Failed to apply", e);
         }
