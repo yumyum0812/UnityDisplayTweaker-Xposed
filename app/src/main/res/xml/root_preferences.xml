@@ -61,8 +61,8 @@
         <SwitchPreferenceCompat
             android:key="change_resolution_scale"
             android:dependency="change_resolution"
-            android:title="@string/title_change_resolution_scale"
-            android:summary="@string/summary_change_resolution_scale"
+            android:title="@string/title_use_resolution_scale"
+            android:summary="@string/summary_use_resolution_scale"
             android:defaultValue="false" />
 
         <EditTextPreference
@@ -87,12 +87,12 @@
 
     <!-- ■ 最大FPSカテゴリ -->
     <PreferenceCategory
-        android:title="@string/category_max_fps">
+        android:title="@string/category_fps_cap">
 
         <SwitchPreferenceCompat
             android:key="change_max_fps"
-            android:title="@string/title_change_max_fps"
-            android:summary="@string/summary_change_max_fps"
+            android:title="@string/title_change_fps_cap"
+            android:summary="@string/summary_change_fps_cap"
             android:defaultValue="false" />
 
         <SwitchPreferenceCompat
@@ -106,8 +106,8 @@
         <EditTextPreference
             android:key="max_fps"
             android:dependency="use_native_refresh_rate"
-            android:title="@string/title_max_fps"
-            android:dialogTitle="@string/dialog_max_fps"
+            android:title="@string/title_fps_cap"
+            android:dialogTitle="@string/dialog_fps_cap"
             android:inputType="number"
             android:defaultValue="60"
             app:useSimpleSummaryProvider="true"/>
