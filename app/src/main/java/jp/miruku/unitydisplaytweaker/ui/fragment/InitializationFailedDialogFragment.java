@@ -18,7 +18,6 @@ public class InitializationFailedDialogFragment extends DialogFragment {
         builder.setTitle(R.string.dialog_initialization_failed_title);
         builder.setMessage(R.string.dialog_initialization_failed_message);
         builder.setPositiveButton(android.R.string.ok, null);
-
         return builder.create();
     }
 }
