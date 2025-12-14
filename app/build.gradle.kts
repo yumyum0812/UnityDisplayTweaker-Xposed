@@ -1,4 +1,8 @@
 import android.databinding.tool.ext.capitalizeUS
+import java.util.Properties
+
+val localProperties = Properties()
+localProperties.load(rootProject.file("local.properties").inputStream())
 
 plugins {
     alias(libs.plugins.android.application)
@@ -23,19 +27,49 @@ android {
         }
     }
 
+    signingConfigs.create("basic") {
+        enableV1Signing = true
+        enableV2Signing = true
+        enableV3Signing = true
+        enableV4Signing = false
+
+        val sf = localProperties.getProperty("signing.storeFile")
+        val sp = localProperties.getProperty("signing.storePassword")
+        val ka = localProperties.getProperty("signing.keyAlias")
+        val kp = localProperties.getProperty("signing.keyPassword")
+        if (sf == null || sp  == null || ka == null || kp == null) {
+            logger.warn("[WARNING] Keystore configs not specified. using debug keystore.")
+            val d = signingConfigs.getByName("debug")
+            storeFile = d.storeFile
+            storePassword = d.storePassword
+            keyAlias = d.keyAlias
+            keyPassword = d.keyPassword
+        } else {
+            storeFile = file(sf)
+            storePassword = sp
+            keyAlias = ka
+            keyPassword = kp
+        }
+    }
+
     buildTypes {
+        all {
+            signingConfig = signingConfigs.getByName("basic")
+        }
         debug {
             versionNameSuffix = "-debug"
+            isDebuggable = true
         }
         release {
-            signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
