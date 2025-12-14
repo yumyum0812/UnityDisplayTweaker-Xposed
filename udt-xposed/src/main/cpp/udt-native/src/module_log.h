@@ -12,7 +12,7 @@ namespace ModuleLog {
 
     template<typename... Args>
     void I(std::string_view fmt, Args&&... args) {
-        Logcat::Error(TAG, fmt, std::forward<Args>(args)...);
+        Logcat::Info(TAG, fmt, std::forward<Args>(args)...);
     }
 
     template<typename... Args>
