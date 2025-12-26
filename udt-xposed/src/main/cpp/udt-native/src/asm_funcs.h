@@ -1,9 +1,13 @@
 #pragma once
 
+#include <cstdint>
+#include <memory>
+
 #include "armutils/arm32_util.h"
 #include "armutils/arm64_util.h"
 #include "armutils/thumb2_util.h"
 #include "utils/logcat.h"
+#include "proc/mem_patch.h"
 #include "proc/mem_patch.h"
 #include "target_arch.h"
 #include "module_log.h"
@@ -15,7 +19,7 @@ namespace AsmFuncs {
         size_t offset = 0;
 
         for (int i = 0; i < performs; i++) {
-            ModuleLog::D("T2: Performing: 0x{:X}", offset);
+            ModuleLog::D("T2: 0x{:x}", offset);
 
             uintptr_t instrAddr = funAddr + offset;
             uintptr_t pc = instrAddr + 4;
@@ -46,7 +50,7 @@ namespace AsmFuncs {
         for (int i = 0; i < performs; i++) {
             size_t offset = i * 4;
 
-            ModuleLog::D("A32: Performing: 0x{:X}", offset);
+            ModuleLog::D("A32: 0x{:x}", offset);
 
             uintptr_t instrAddr = funAddr + offset;
             uintptr_t pc = instrAddr + 8;
@@ -69,7 +73,7 @@ namespace AsmFuncs {
 
         for (int i = 0; i < performs; i++) {
             size_t offset = i * 4;
-            ModuleLog::D("A64: Performing: 0x{:X}", offset);
+            ModuleLog::D("A64: 0x{:x}", offset);
 
             uintptr_t instrAddr = funAddr + offset;
             uint32_t instr = Arm64Util::ReadInstruction((uint8_t*) instrAddr);
@@ -94,18 +98,18 @@ namespace AsmFuncs {
 #endif
     }
 
-    void DisableVoidFunc(uintptr_t funAddr) {
+    std::unique_ptr<MemPatch> CreateDisableVoidPatch(uintptr_t funAddr) {
 #if TARGET_ARM64
         // Arm64: RET
-        MemPatch::Patch(funAddr, "C0 03 5F D6");
+        return std::make_unique<MemPatch>(funAddr, "C0 03 5F D6");
 #else
         // Arm32: Check the T-bit (1 = Thumb, 0 = Arm)
         if (funAddr & 1) {
             // Thumb: BX LR
-            MemPatch::Patch(funAddr & ~1, "70 47");
+            return std::make_unique<MemPatch>(funAddr & ~1, "70 47");
         } else {
             // Arm: BX LR
-            MemPatch::Patch(funAddr, "1E FF 2F E1");
+            return std::make_unique<MemPatch>(funAddr, "1E FF 2F E1");
         }
 #endif
     }
