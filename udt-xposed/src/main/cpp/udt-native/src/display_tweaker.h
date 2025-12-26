@@ -35,6 +35,8 @@ namespace DisplayTweaker {
     } hooks;
 
     bool Init() {
+        if (il2cpp_resolve_icall) return true;
+
         void* handle = xdl_open("libil2cpp.so", XDL_DEFAULT);
         if (!handle) {
             ModuleLog::E("Couldn't obtain handle of libil2cpp.so");
