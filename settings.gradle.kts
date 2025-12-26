@@ -1,11 +1,5 @@
 import java.net.URI
 
-include(":udt-xposed")
-
-
-include(":material-preference")
-
-
 pluginManagement {
     repositories {
         google {
@@ -30,3 +24,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "UnityDisplayTweaker"
 include(":app")
+include(":udt-xposed")
+include(":material-preference")
