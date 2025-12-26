@@ -5,6 +5,7 @@
 #include "unity/il2cpp/fullscreen_mode.h"
 #include "unity/il2cpp/refresh_rate.h"
 #include "utils/logcat.h"
+#include "proc/mem_patch.h"
 #include "asm_funcs.h"
 #include "module_log.h"
 
