@@ -1,17 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="Base.AppTheme">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="preferenceTheme">@style/ThemeOverlay.Miruku.Preference.Material3</item>
-        <item name="android:listPreferredItemPaddingStart">24dp</item>
-        <item name="android:listPreferredItemPaddingEnd">16dp</item>
-
-        <item name="android:navigationBarColor">?attr/background</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
-    </style>
-
-    <style name="Base.AppTheme" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Base.AppTheme" parent="Theme.Material3.Dark.NoActionBar">
         <item name="colorPrimary">@color/md_theme_primary</item>
         <item name="colorOnPrimary">@color/md_theme_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_primaryContainer</item>
