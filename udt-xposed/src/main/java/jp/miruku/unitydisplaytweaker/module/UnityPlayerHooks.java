@@ -47,13 +47,7 @@ public class UnityPlayerHooks {
             }
 
             mContentView = window.findViewById(Window.ID_ANDROID_CONTENT);
-            mContentView.addOnLayoutChangeListener((
-                    v,
-                    left, top, right, bottom,
-                    oldLeft, oldTop, oldRight, oldBottom) -> {
-                updateResolution();
-            });
-
+            mContentView.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> updateResolution());
             mContentView.postDelayed(this::delayInitialize, (int)(mConfig.delayApply * 1000));
         }
 
