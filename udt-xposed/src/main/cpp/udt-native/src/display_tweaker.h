@@ -18,6 +18,21 @@ namespace DisplayTweaker {
     void (* Screen_SetResolution)(int width, int height, FullScreenMode mode, int rr) = nullptr;
     void (* Screen_SetResolution_Injected)(int width, int height, FullScreenMode mode, const RefreshRate& rr) = nullptr;
     void (* Application_set_targetFrameRate)(int value) = nullptr;
+    ScreenManager* (* GetScreenManager)() = nullptr;
+
+    bool resInit = false;
+    bool frInit = false;
+
+    bool Init();
+    bool SetupResolution();
+    bool SetupTargetFrameRate();
+
+    struct {
+        std::unique_ptr<MemPatch> setResPatch;
+        std::unique_ptr<MemPatch> setResInjPatch;
+        std::unique_ptr<MemPatch> setFrPatch;
+        std::unique_ptr<MemPatch> reqResPatch;
+    } hooks;
 
     bool Init() {
         void* handle = xdl_open("libil2cpp.so", XDL_DEFAULT);
