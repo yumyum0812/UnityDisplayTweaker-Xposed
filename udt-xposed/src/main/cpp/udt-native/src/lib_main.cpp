@@ -22,7 +22,7 @@
 extern "C"
 JNIEXPORT JNICALL jint JNI_OnLoad(JavaVM* vm, void*) {
     JNIEnv* env = nullptr;
-    if (vm->GetEnv((void**)&env, JNI_VERSION_1_6) != JNI_OK) {
+    if (vm->GetEnv((void**) &env, JNI_VERSION_1_6) != JNI_OK) {
         ModuleLog::E("Couldn't obtain JNIEnv!");
         return JNI_ERR;
     }
