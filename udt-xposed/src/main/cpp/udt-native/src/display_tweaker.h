@@ -38,7 +38,7 @@ namespace DisplayTweaker {
         if (il2cpp_resolve_icall) return true;
 
         void* handle = xdl_open("libil2cpp.so", XDL_DEFAULT);
-        if (!handle) {
+        if (handle == nullptr) {
             ModuleLog::E("Couldn't obtain handle of libil2cpp.so");
             return false;
         }
@@ -46,105 +46,115 @@ namespace DisplayTweaker {
         ModuleLog::D("libil2cpp.so found.");
 
         il2cpp_resolve_icall = (decltype(il2cpp_resolve_icall)) xdl_sym(handle, "il2cpp_resolve_icall", nullptr);
-        if (!il2cpp_resolve_icall) {
+        if (il2cpp_resolve_icall == nullptr) {
             ModuleLog::E("Couldn't resolve symbol: il2cpp_resolve_icall");
             return false;
         }
 
-        ModuleLog::D("il2cpp_resolve_icall: 0x{:X}", (uintptr_t) il2cpp_resolve_icall);
+        ModuleLog::D("il2cpp_resolve_icall: 0x{:x}", (uintptr_t) il2cpp_resolve_icall);
 
         return true;
     }
 
     bool SetupResolution() {
-        if (!il2cpp_resolve_icall) {
-            return false;
-        }
-
-        Screen_SetResolution = (decltype(Screen_SetResolution)) il2cpp_resolve_icall("UnityEngine.Screen::SetResolution");
-        Screen_SetResolution_Injected = (decltype(Screen_SetResolution_Injected)) il2cpp_resolve_icall("UnityEngine.Screen::SetResolution_Injected");
-        Screen_get_width = (decltype(Screen_get_width)) il2cpp_resolve_icall("UnityEngine.Screen::get_width");
-
-        if (Screen_SetResolution) {
-            ModuleLog::D("Screen_SetResolution: 0x{:X}", (uintptr_t) Screen_SetResolution);
-        }
-        if (Screen_SetResolution_Injected) {
-            ModuleLog::D("Screen_SetResolution_Injected: 0x{:X}", (uintptr_t) Screen_SetResolution_Injected);
-        }
-        if (Screen_get_width) {
-            ModuleLog::D("Screen_get_width: 0x{:X}", (uintptr_t) Screen_get_width);
-        }
-
-        if (Screen_SetResolution || Screen_SetResolution_Injected || Screen_get_width) {
-            return true;
-        }
-
-        return false;
-    }
-
-    bool SetupTargetFrameRate() {
-        if (!il2cpp_resolve_icall) {
-            return false;
-        }
-
-        Application_set_targetFrameRate = (decltype(Application_set_targetFrameRate)) il2cpp_resolve_icall("UnityEngine.Application::set_targetFrameRate");
-
-        if (Application_set_targetFrameRate) {
-            ModuleLog::D("set_targetFrameRate: 0x{:X}", (uintptr_t) Application_set_targetFrameRate);
-        }
-
-        if (Application_set_targetFrameRate) {
-            return true;
-        }
-
-        return false;
-    }
-
-    bool PatchResolution(int width, int height) {
-        bool success = false;
+        if (resInit) return true;
 
 #if !UDT_FORCE_OPCODE_METHOD
+        Screen_SetResolution = (decltype(Screen_SetResolution)) il2cpp_resolve_icall("UnityEngine.Screen::SetResolution");
+        Screen_SetResolution_Injected = (decltype(Screen_SetResolution_Injected)) il2cpp_resolve_icall("UnityEngine.Screen::SetResolution_Injected");
+
         if (Screen_SetResolution) {
-            Screen_SetResolution(width, height, FullScreenMode::FullScreenWindow, 0);
-            AsmFuncs::DisableVoidFunc((uintptr_t) Screen_SetResolution);
-
-            ModuleLog::D("Changed resolution successfully. (1)");
-            success = true;
+            ModuleLog::D("SetResolution: 0x{:x}", (uintptr_t) Screen_SetResolution);
         }
-
         if (Screen_SetResolution_Injected) {
-            Screen_SetResolution_Injected(width, height, FullScreenMode::FullScreenWindow, {0, 0});
-            AsmFuncs::DisableVoidFunc((uintptr_t) Screen_SetResolution_Injected);
-
-            ModuleLog::D("Changed resolution successfully. (2)");
-            success = true;
+            ModuleLog::D("SetResolution_Injected: 0x{:x}", (uintptr_t) Screen_SetResolution_Injected);
         }
 #endif
 
-        if (!success && Screen_get_width) {
-            auto getWidthAddr = (uintptr_t) Screen_get_width;
+        if ((Screen_SetResolution == nullptr) && (Screen_SetResolution_Injected == nullptr)) {
+            auto Screen_get_width = (int (*)()) il2cpp_resolve_icall("UnityEngine.Screen::get_width");
+            if (Screen_get_width == nullptr) {
+                ModuleLog::E("Couldn't find get_width function!");
+                return false;
+            }
+            ModuleLog::D("get_width: 0x{:x}", (uintptr_t) Screen_get_width);
 
-            // 先頭の命令8つから GetScreenManager の呼び出しを期待
-            auto getScreenManager = (ScreenManager*(*)()) AsmFuncs::FindSubroutineCall(getWidthAddr, 8);
-            if (!getScreenManager) {
+            // 先頭の命令4つから GetScreenManager の呼び出しを期待
+            GetScreenManager = (decltype(GetScreenManager)) AsmFuncs::FindSubroutineCall((uintptr_t) Screen_get_width, 4);
+            if (GetScreenManager == nullptr) {
                 ModuleLog::E("Couldn't find call of GetScreenManager!");
                 return false;
             }
+            ModuleLog::D("GetScreenManager: 0x{:x}", (uintptr_t) GetScreenManager);
+        }
 
-            ModuleLog::D("GetScreenManager: 0x{:X}", (uintptr_t) getScreenManager);
+        resInit = true;
+        return true;
+    }
 
-            ScreenManager* sm = getScreenManager();
-            if (!sm) {
+    bool SetupTargetFrameRate() {
+        if (frInit) return true;
+
+        Application_set_targetFrameRate = (decltype(Application_set_targetFrameRate)) il2cpp_resolve_icall("UnityEngine.Application::set_targetFrameRate");
+        if (Application_set_targetFrameRate == nullptr) {
+            ModuleLog::E("Couldn't find set_targetFrameRate function!");
+            return false;
+        }
+
+        ModuleLog::D("set_targetFrameRate: 0x{:x}", (uintptr_t) Application_set_targetFrameRate);
+        frInit = true;
+        return true;
+    }
+
+    bool PatchResolution(int width, int height) {
+        if (!resInit) {
+            ModuleLog::E("Resolution functions not init!");
+            return false;
+        }
+
+        bool success = false;
+
+        if (Screen_SetResolution) {
+            if (hooks.setResPatch != nullptr) hooks.setResPatch->Restore();
+
+            Screen_SetResolution(width, height, FullScreenMode::FullScreenWindow, 0);
+
+            hooks.setResPatch = AsmFuncs::CreateDisableVoidPatch((uintptr_t) Screen_SetResolution);
+            hooks.setResPatch->Modify();
+
+            ModuleLog::I("Changed resolution successfully (1)");
+            success = true;
+        }
+
+        if (Screen_SetResolution_Injected) {
+            if (hooks.setResInjPatch != nullptr) hooks.setResInjPatch->Restore();
+
+            Screen_SetResolution_Injected(width, height, FullScreenMode::FullScreenWindow, {0, 0});
+
+            hooks.setResInjPatch = AsmFuncs::CreateDisableVoidPatch((uintptr_t) Screen_SetResolution_Injected);
+            hooks.setResInjPatch->Modify();
+
+            ModuleLog::I("Changed resolution successfully (2)");
+            success = true;
+        }
+
+        if (!success && (GetScreenManager != nullptr)) {
+            ScreenManager* sm = GetScreenManager();
+            if (sm == nullptr) {
                 ModuleLog::E("Couldn't obtain ScreenManager!");
                 return false;
             }
 
-            ModuleLog::D("ScreenManager: 0x{:X}", (uintptr_t) sm);
+            ModuleLog::D("ScreenManager: 0x{:x}", (uintptr_t) sm);
+
+            if (hooks.reqResPatch != nullptr) hooks.reqResPatch->Restore();
 
             sm->RequestResolution(width, height, true, 0);
-            AsmFuncs::DisableVoidFunc((uintptr_t) sm->vtable->RequestResolution);
 
-            ModuleLog::I("Changed resolution successfully. (3)");
+            hooks.reqResPatch = AsmFuncs::CreateDisableVoidPatch((uintptr_t) sm->vtable->RequestResolution);
+            hooks.reqResPatch->Modify();
+
+            ModuleLog::I("Changed resolution successfully (3)");
             return true;
         }
 
@@ -152,10 +162,20 @@ namespace DisplayTweaker {
     }
 
     bool PatchTargetFrameRate(int target) {
-        if (Application_set_targetFrameRate) {
+        if (!frInit) {
+            ModuleLog::E("Framerate functions not init!");
+            return false;
+        }
+
+        if (Application_set_targetFrameRate != nullptr) {
+            if (hooks.setFrPatch != nullptr) hooks.setFrPatch->Restore();
+
             Application_set_targetFrameRate(target);
-            AsmFuncs::DisableVoidFunc((uintptr_t) Application_set_targetFrameRate);
-            ModuleLog::I("Changed target framerate successfully. (1)");
+
+            hooks.setFrPatch = AsmFuncs::CreateDisableVoidPatch((uintptr_t) Application_set_targetFrameRate);
+            hooks.setFrPatch->Modify();
+
+            ModuleLog::I("Changed target framerate successfully (1)");
             return true;
         }
         return false;
