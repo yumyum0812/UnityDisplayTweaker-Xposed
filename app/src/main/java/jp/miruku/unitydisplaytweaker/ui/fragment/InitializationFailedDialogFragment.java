@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -13,7 +14,7 @@ import jp.miruku.unitydisplaytweaker.R;
 public class InitializationFailedDialogFragment extends DialogFragment {
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         var builder = new MaterialAlertDialogBuilder(requireContext());
         builder.setTitle(R.string.dialog_initialization_failed_title);
         builder.setMessage(R.string.dialog_initialization_failed_message);
