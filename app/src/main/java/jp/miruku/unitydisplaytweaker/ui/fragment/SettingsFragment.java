@@ -1,34 +1,68 @@
 package jp.miruku.unitydisplaytweaker.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import jp.miruku.material.preference.PreferenceFragmentMaterial;
 import jp.miruku.unitydisplaytweaker.R;
 
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 public class SettingsFragment extends PreferenceFragmentMaterial implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private SharedPreferences mSp;
-    private boolean mInitialized = false;
+    private static final String INITIALIZATION_FAILED_DIALOG_TAG = "initialization_failed_dialog";
 
-    public boolean isInitialized() {
-        return mInitialized;
+    private SharedPreferences mSp;
+
+    @Override
+    @NonNull
+    public RecyclerView onCreateRecyclerView(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle savedInstanceState) {
+        var listView = super.onCreateRecyclerView(inflater, parent, savedInstanceState);
+        listView.setClipToPadding(false);
+
+        final int baseLeft = listView.getPaddingLeft();
+        final int baseTop = listView.getPaddingTop();
+        final int baseRight = listView.getPaddingRight();
+        final int baseBottom = listView.getPaddingBottom();
+
+        listView.setOnApplyWindowInsetsListener((v2, insets) -> {
+            var insetsCompat = WindowInsetsCompat.toWindowInsetsCompat(insets);
+            var systemInsets = insetsCompat.getInsets(
+                    WindowInsetsCompat.Type.systemBars()
+            );
+
+            listView.setPadding(baseLeft, baseTop, baseRight, baseBottom + systemInsets.bottom);
+            return insets;
+        });
+
+        return listView;
+    }
+
+    private void onInitializationFailed() {
+        var fm = getParentFragmentManager();
+        if (fm.findFragmentByTag(INITIALIZATION_FAILED_DIALOG_TAG) == null) {
+            var df = new InitializationFailedDialogFragment();
+            df.show(fm, INITIALIZATION_FAILED_DIALOG_TAG);
+        }
     }
 
     @Override
     @SuppressWarnings("deprecation")
+    @SuppressLint("WorldReadableFiles")
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
         try {
             mSp = requireContext().getSharedPreferences("module_config", Context.MODE_WORLD_READABLE);
-        } catch (SecurityException e) {
-            mInitialized = true;
+        } catch (SecurityException ignored) {
+            onInitializationFailed();
         }
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
     }
@@ -37,7 +71,8 @@ public class SettingsFragment extends PreferenceFragmentMaterial implements Shar
     public void onResume() {
         super.onResume();
         if (mSp != null) {
-            Objects.requireNonNull(getPreferenceScreen().getSharedPreferences()).registerOnSharedPreferenceChangeListener(this);
+            var sp = getPreferenceScreen().getSharedPreferences();
+            if (sp != null) sp.registerOnSharedPreferenceChangeListener(this);
         }
     }
 
@@ -45,30 +80,31 @@ public class SettingsFragment extends PreferenceFragmentMaterial implements Shar
     public void onPause() {
         super.onPause();
         if (mSp != null) {
-            Objects.requireNonNull(getPreferenceScreen().getSharedPreferences()).unregisterOnSharedPreferenceChangeListener(this);
+            var sp = getPreferenceScreen().getSharedPreferences();
+            if (sp != null) sp.unregisterOnSharedPreferenceChangeListener(this);
         }
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, @Nullable String s) {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, @Nullable String key) {
         var editor = mSp.edit();
-        for (Map.Entry<String, ?> entry : sharedPreferences.getAll().entrySet()) {
-            var key = entry.getKey();
-            var value = entry.getValue();
-            if (value instanceof String) {
-                editor.putString(key, (String) value);
-            } else if (value instanceof Integer) {
-                editor.putInt(key, (Integer) value);
-            } else if (value instanceof Boolean) {
-                editor.putBoolean(key, (Boolean) value);
-            } else if (value instanceof Float) {
-                editor.putFloat(key, (Float) value);
-            } else if (value instanceof Long) {
-                editor.putLong(key, (Long) value);
-            } else if (value instanceof Set<?>) {
+        for (var entry : sharedPreferences.getAll().entrySet()) {
+            var k = entry.getKey();
+            var v = entry.getValue();
+            if (v instanceof String) {
+                editor.putString(k, (String) v);
+            } else if (v instanceof Integer) {
+                editor.putInt(k, (Integer) v);
+            } else if (v instanceof Boolean) {
+                editor.putBoolean(k, (Boolean) v);
+            } else if (v instanceof Float) {
+                editor.putFloat(k, (Float) v);
+            } else if (v instanceof Long) {
+                editor.putLong(k, (Long) v);
+            } else if (v instanceof Set<?>) {
                 @SuppressWarnings("unchecked")
-                Set<String> set = (Set<String>) value;
-                editor.putStringSet(key, set);
+                var set = (Set<String>) v;
+                editor.putStringSet(k, set);
             }
         }
         editor.apply();
