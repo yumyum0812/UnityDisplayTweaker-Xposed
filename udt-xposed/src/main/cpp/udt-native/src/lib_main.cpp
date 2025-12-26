@@ -27,14 +27,16 @@ JNIEXPORT JNICALL jint JNI_OnLoad(JavaVM* vm, void*) {
         return JNI_ERR;
     }
 
-    jclass clazz = env->FindClass("jp/miruku/unitydisplaytweaker/module/XposedEntry");
+    jclass clazz = env->FindClass("jp/miruku/unitydisplaytweaker/module/UDTNative");
     if (clazz == nullptr) {
         ModuleLog::E("Couldn't find entry class!");
         return JNI_ERR;
     }
 
     JNINativeMethod nativeMethods[] = {
-            {"startApply", "(FZIIZI)V", (void*) StartApply},
+            {"initialize", "()V", (void*) JniImpls::Initialize},
+            {"setResolution", "(II)V", (void*) JniImpls::SetResolution},
+            {"setFpsCap", "(I)V", (void*) JniImpls::SetFpsCap},
     };
 
     if (jint rc = env->RegisterNatives(clazz, nativeMethods, sizeof nativeMethods / sizeof nativeMethods[0]); rc != JNI_OK) {
