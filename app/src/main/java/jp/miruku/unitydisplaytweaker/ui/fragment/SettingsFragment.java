@@ -57,14 +57,15 @@ public class SettingsFragment extends PreferenceFragmentMaterial implements Shar
     @Override
     @SuppressWarnings("deprecation")
     @SuppressLint("WorldReadableFiles")
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+    public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
         getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
+        setPreferencesFromResource(R.xml.root_preferences, rootKey);
         try {
             mSp = requireContext().getSharedPreferences("module_config", Context.MODE_WORLD_READABLE);
         } catch (SecurityException ignored) {
             onInitializationFailed();
+            getPreferenceScreen().setEnabled(false);
         }
-        setPreferencesFromResource(R.xml.root_preferences, rootKey);
     }
 
     @Override
@@ -86,7 +87,7 @@ public class SettingsFragment extends PreferenceFragmentMaterial implements Shar
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, @Nullable String key) {
+    public void onSharedPreferenceChanged(@NonNull SharedPreferences sharedPreferences, @Nullable String key) {
         var editor = mSp.edit();
         for (var entry : sharedPreferences.getAll().entrySet()) {
             var k = entry.getKey();
