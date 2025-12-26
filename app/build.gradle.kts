@@ -18,8 +18,8 @@ android {
         applicationId = "jp.miruku.unitydisplaytweaker"
         minSdk = 24
         targetSdk = 36
-        versionCode = 3
-        versionName = "0.2.0"
+        versionCode = 4
+        versionName = "0.2.1"
 
         ndk {
             abiFilters.add("armeabi-v7a")
