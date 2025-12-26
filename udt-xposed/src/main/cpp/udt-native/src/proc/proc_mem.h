@@ -31,12 +31,12 @@ public:
     std::vector<uint8_t> Read(uintptr_t address, size_t count) {
         std::vector<uint8_t> out(count);
 
-        memFs->seekg(address, std::ios::beg);
+        memFs->seekg((off_t) address, std::ios::beg);
         if (!memFs->good()) {
             throw std::runtime_error("Failed to seek memory location.");
         }
 
-        memFs->read(reinterpret_cast<char*>(out.data()), count);
+        memFs->read(reinterpret_cast<char*>(out.data()), (std::streamsize) count);
         if (!memFs->good()) {
             throw std::runtime_error("Failed to read memory.");
         }
@@ -45,12 +45,12 @@ public:
     }
 
     void Write(uintptr_t address, const std::vector<uint8_t>& data) {
-        memFs->seekp(address, std::ios::beg);
+        memFs->seekp((off_t) address, std::ios::beg);
         if (!memFs->good()) {
             throw std::runtime_error("Failed to seek memory location.");
         }
         
-        memFs->write(reinterpret_cast<const char*>(data.data()), data.size());
+        memFs->write(reinterpret_cast<const char*>(data.data()), (std::streamsize) data.size());
         if (!memFs->good()) {
             throw std::runtime_error("Failed to write memory.");
         }
