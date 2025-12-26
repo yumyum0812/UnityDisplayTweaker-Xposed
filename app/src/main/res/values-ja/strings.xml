@@ -1,9 +1,6 @@
 <!-- Language: ja-JP -->
 
 <resources>
-    <!-- アプリ名 -->
-    <string name="app_name">UnityDisplayTweaker</string>
-
     <!-- モジュールの説明 -->
     <string name="module_description">Unityエンジンのゲームの表示設定を変更します</string>
 
@@ -29,9 +26,9 @@
     <string name="title_change_resolution">描画解像度を変更</string>
     <string name="summary_change_resolution">描画解像度の幅・高さを変更します</string>
 
-    <!-- ネイティブ解像度を使用 -->
-    <string name="title_use_native_resolution">ネイティブ解像度を使用</string>
-    <string name="summary_use_native_resolution">カスタム解像度の代わりに、ディスプレイの解像度を使用します</string>
+    <!-- ウィンドウ解像度を使用 -->
+    <string name="title_use_window_resolution">ウィンドウ解像度を使用</string>
+    <string name="summary_use_window_resolution">カスタム解像度の代わりに、アクティビティのウィンドウ解像度を使用します</string>
 
     <!-- カスタム幅 -->
     <string name="title_custom_width">カスタム幅</string>
@@ -60,9 +57,9 @@
     <string name="title_change_fps_cap">FPSの上限を変更</string>
     <string name="summary_change_fps_cap">FPSの上限値を指定した値に置き換えます</string>
 
-    <!-- ネイティブなリフレッシュレートを使用 -->
-    <string name="title_use_native_refresh_rate">ネイティブなリフレッシュレートを使用</string>
-    <string name="summary_use_native_refresh_rate">指定したFPSの上限値の代わりに、ディスプレイのリフレッシュレートを使用します</string>
+    <!-- ディスプレイのリフレッシュレートを使用 -->
+    <string name="title_use_display_refresh_rate">ディスプレイのリフレッシュレートを使用</string>
+    <string name="summary_use_display_refresh_rate">指定したFPSの上限値の代わりに、ディスプレイのリフレッシュレートを使用します</string>
 
     <!-- FPSの上限値 -->
     <string name="title_fps_cap">FPSの上限値</string>
