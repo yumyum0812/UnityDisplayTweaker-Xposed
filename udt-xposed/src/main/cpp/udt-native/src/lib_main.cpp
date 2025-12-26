@@ -17,60 +17,7 @@
 #include "asm_funcs.h"
 #include "display_tweaker.h"
 #include "module_log.h"
-
-void Apply(const ApplyConfig& cfg) {
-    if (!DisplayTweaker::Init()) {
-        ModuleLog::E("Failed to initialize!");
-        return;
-    }
-
-    if (cfg.changeResolution) {
-        if (!DisplayTweaker::SetupResolution()) {
-            ModuleLog::E("Failed to initialize functions!");
-            return;
-        }
-
-        if (!DisplayTweaker::PatchResolution(cfg.width, cfg.height)) {
-            ModuleLog::E("Failed to change resolution!");
-            return;
-        }
-    }
-
-    if (cfg.changeMaxFps) {
-        if (!DisplayTweaker::SetupTargetFrameRate()) {
-            ModuleLog::E("Failed to initialize frame rate functions!");
-            return;
-        }
-
-        if (!DisplayTweaker::PatchTargetFrameRate(cfg.maxFps)) {
-            ModuleLog::E("Failed to change target frame rate!");
-            return;
-        }
-    }
-}
-
-void StartApply(JNIEnv* env, jclass clazz, jfloat delay, jboolean changeResolution, jint width, jint height, jboolean changeMaxFps, jint maxFps) {
-    ModuleLog::I("ABI: " TARGET_ARCH_NAME);
-
-    ApplyConfig cfg;
-    cfg.changeResolution = changeResolution;
-    cfg.width = width;
-    cfg.height = height;
-    cfg.changeMaxFps = changeMaxFps;
-    cfg.maxFps = maxFps;
-
-    if (changeResolution) {
-        ModuleLog::I("Target resolution: {:d}x{:d}", width, height);
-    }
-    if (changeMaxFps) {
-        ModuleLog::I("Target frame rate: {:d}", maxFps);
-    }
-
-    std::thread([=] {
-        std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(delay * 1000)));
-        Apply(cfg);
-    }).detach();
-}
+#include "jni_impls.h"
 
 extern "C"
 JNIEXPORT JNICALL jint JNI_OnLoad(JavaVM* vm, void*) {
