@@ -33,16 +33,16 @@
             android:defaultValue="false" />
 
         <SwitchPreferenceCompat
-            android:key="use_native_resolution"
-            android:title="@string/title_use_native_resolution"
+            android:key="use_window_resolution"
+            android:title="@string/title_use_window_resolution"
             android:dependency="change_resolution"
-            android:summary="@string/summary_use_native_resolution"
+            android:summary="@string/summary_use_window_resolution"
             android:disableDependentsState="true"
             android:defaultValue="false" />
 
         <EditTextPreference
             android:key="custom_width"
-            android:dependency="use_native_resolution"
+            android:dependency="use_window_resolution"
             android:title="@string/title_custom_width"
             android:dialogTitle="@string/dialog_custom_width"
             android:inputType="number"
@@ -51,7 +51,7 @@
 
         <EditTextPreference
             android:key="custom_height"
-            android:dependency="use_native_resolution"
+            android:dependency="use_window_resolution"
             android:title="@string/title_custom_height"
             android:dialogTitle="@string/dialog_custom_height"
             android:inputType="number"
@@ -97,9 +97,9 @@
 
         <SwitchPreferenceCompat
             android:key="use_native_refresh_rate"
-            android:title="@string/title_use_native_refresh_rate"
+            android:title="@string/title_use_display_refresh_rate"
             android:dependency="change_max_fps"
-            android:summary="@string/summary_use_native_refresh_rate"
+            android:summary="@string/summary_use_display_refresh_rate"
             android:disableDependentsState="true"
             android:defaultValue="false" />
 
