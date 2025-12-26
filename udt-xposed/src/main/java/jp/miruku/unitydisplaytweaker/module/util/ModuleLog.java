@@ -9,7 +9,7 @@ public class ModuleLog {
     private static final String TAG_XPOSED = "UDT";
 
     public static void d(String msg) {
-        Log.i(TAG_LOGCAT, msg);
+        Log.d(TAG_LOGCAT, msg);
         logForXposed("D", msg);
     }
 
