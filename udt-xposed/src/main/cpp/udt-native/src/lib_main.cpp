@@ -46,19 +46,3 @@ JNIEXPORT JNICALL jint JNI_OnLoad(JavaVM* vm, void*) {
 
     return JNI_VERSION_1_6;
 }
-
-extern "C"
-API_EXPORT
-void LoadFromExternal() {
-    std::thread([] {
-        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-
-        ApplyConfig cfg;
-        cfg.changeResolution = true;
-        cfg.width = 640;
-        cfg.height = 480;
-        cfg.changeMaxFps = true;
-        cfg.maxFps = 30;
-        Apply(cfg);
-    }).detach();
-}
