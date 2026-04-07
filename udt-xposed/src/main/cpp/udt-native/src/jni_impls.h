@@ -1,4 +1,6 @@
 #pragma once
+#include "display_tweaker.h"
+#include "module_log.h"
 
 namespace JniImpls {
     void Initialize(JNIEnv* env, jclass clazz) {
