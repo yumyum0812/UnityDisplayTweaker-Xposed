@@ -8,6 +8,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
         android
         log
         xdl-static
+        mimem
 )
 
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")

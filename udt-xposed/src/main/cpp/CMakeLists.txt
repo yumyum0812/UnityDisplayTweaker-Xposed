@@ -14,3 +14,4 @@ endif()
 
 add_subdirectory(xdl-static)
 add_subdirectory(udt-native)
+add_subdirectory(mimem)
