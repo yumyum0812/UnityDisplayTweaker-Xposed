@@ -34,7 +34,7 @@ namespace AsmFuncs {
                     return pc + off;
                 } else if (Thumb2Util::IsInstrImmBL(first, second)) {
                     int32_t off = Thumb2Util::ExtractImmOffsetBL(first, second);
-                    return (pc + off) | 1; // LSB を設定（Thumbモードを継続）
+                    return (pc + off) | 1; // set LSB (continue Thumb mode)
                 }
             }
 
