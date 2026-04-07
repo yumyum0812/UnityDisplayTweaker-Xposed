@@ -45,7 +45,7 @@ Run the command in one of the following environments:
 ```shell
 pm disable-user --user 0 com.samsung.android.game.gos
 ```
-#### Uninstall Game Booster, Gaming Hub
+#### Uninstall Game Booster and Gaming Hub
 ```shell
 pm uninstall --user 0 com.samsung.android.game.gametools
 pm uninstall --user 0 com.samsung.android.game.gamehome
@@ -58,7 +58,7 @@ pm uninstall --user 0 com.samsung.android.game.gamehome
 ```shell
 pm enable --user 0 com.samsung.android.game.gos
 ```
-#### Restore Game Booster, Gaming Hub
+#### Restore Game Booster and Gaming Hub
 ```shell
 pm install-existing com.samsung.android.game.gametools
 pm install-existing com.samsung.android.game.gamehome
