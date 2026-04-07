@@ -38,7 +38,7 @@ Android 上で動作する Unity（IL2CPP）で作成されたゲームの **解
 この場合は、該当の機能を無効化することで改善する可能性があります。
 ### 実行方法
 以下のいずれかの環境でコマンドを実行してください：
-- ADB shell：`adb shell ...`
+- ADB：`adb shell ...`
 - シェル権限：`su shell -c "..."`
 ### 無効化
 #### Game Optimizing Service の無効化
