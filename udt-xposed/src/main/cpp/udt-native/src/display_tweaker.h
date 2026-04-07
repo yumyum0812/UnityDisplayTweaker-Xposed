@@ -11,7 +11,7 @@
 #include "module_log.h"
 #include "target_arch.h"
 
-constexpr bool UDT_FORCE_PATTERN = true;
+constexpr bool UDT_FORCE_PATTERN = false;
 constexpr bool UDT_FORCE_OPCODE = false;
 
 #if TARGET_ARM64
