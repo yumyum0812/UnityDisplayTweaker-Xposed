@@ -78,10 +78,13 @@ namespace DisplayTweaker {
             }
         }
 
+        if (il2cpp_resolve_icall == nullptr) {
+            ModuleLog::E("Couldn't find il2cpp_resolve_icall");
+            return false;
+        }
+
         if (il2cpp_resolve_icall != nullptr) {
             ModuleLog::D("il2cpp_resolve_icall: 0x{:x}", (uintptr_t) il2cpp_resolve_icall);
-        } else {
-            ModuleLog::E("Couldn't find function: il2cpp_resolve_icall");
         }
 
         return true;
