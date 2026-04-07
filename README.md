@@ -7,7 +7,7 @@ English | [日本語](./README-jaJP.md)
 
 ## Overview
 This is an Xposed module that allows you to adjust the **rendering resolution** and **maximum FPS** of Unity (IL2CPP) games running on Android devices.  
-It can be useful if you want more control over graphics-related settings.
+It can be useful if you want more control over resolution settings.
 
 ## Warning
 - This module does **not** work with every Unity game.
@@ -33,7 +33,38 @@ It can be useful if you want more control over graphics-related settings.
 4. Open the module app and adjust the settings to your liking.
 5. Launch the game and enjoy!
 
+## On Samsung Devices
+On some Samsung devices, the resolution based on the native resolution may not be displayed correctly due to the effects of Game Booster.
+In this case, disabling the feature may resolve the issue.
+### Execution
+Run the command in one of the following environments:
+- ADB shell：`adb shell ...`
+- shell privilege：`su shell -c "..."`
+### Disable
+#### Disable Game Optimizing Service
+```shell
+pm disable-user --user 0 com.samsung.android.game.gos
+```
+#### Uninstall Game Booster, Gaming Hub
+```shell
+pm uninstall --user 0 com.samsung.android.game.gametools
+pm uninstall --user 0 com.samsung.android.game.gamehome
+```
+### Re-Enable
+#### Enable Game Optimizing Service
+```shell
+pm enable --user 0 com.samsung.android.game.gos
+```
+#### Restore Game Booster, Gaming Hub
+```shell
+pm install-existing com.samsung.android.game.gametools
+pm install-existing com.samsung.android.game.gamehome
+```
+
 ## Credits
 This project was inspired by the following work:
 - [UnityFPSUnlocker](https://github.com/hexstr/UnityFPSUnlocker/)
 
+Libraries used:
+- [xDL](https://github.com/hexhacking/xDL)
+- [XposedBridge](https://github.com/rovo89/XposedBridge/tree/art)
