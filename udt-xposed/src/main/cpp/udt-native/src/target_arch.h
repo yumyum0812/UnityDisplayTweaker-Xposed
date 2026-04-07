@@ -2,7 +2,7 @@
 
 #define TARGET_ARM64 0
 #define TARGET_ARMV7 0
-#define TARGET_ARCH_NAME "unknown"
+#define TARGET_ARCH_NAME "unsupported"
 
 #if defined(__aarch64__) || defined(_M_ARM64)
     #undef TARGET_ARM64
