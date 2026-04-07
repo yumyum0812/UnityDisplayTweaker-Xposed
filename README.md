@@ -13,6 +13,7 @@ It can be useful if you want more control over graphics-related settings.
 - This module does **not** work with every Unity game.
 - Mono and x86/x86_64 builds are not supported.
 - This module modifies internal game behavior and **may be detected** by some titles, which could result in **account restrictions**.
+  Use at your own risk!
 
 ## Supported Requirements
 
