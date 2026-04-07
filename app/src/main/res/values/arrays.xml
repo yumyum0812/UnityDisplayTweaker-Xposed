@@ -1,5 +1,6 @@
 <resources>
     <string-array name="module_scope">
+        <!-- Vehicle Games -->
         <item>com.fengiiley.frlegends</item>
         <item>com.olzhas.carparking.multyplayer</item>
         <item>com.drivezone.car.race.game</item>
@@ -7,8 +8,16 @@
         <item>com.sbkgames.rallyracerdirt</item>
         <item>com0.Company.ProductName1</item>
         <item>com.unrealgames.RacinginCar2020</item>
-        <item>com.turbochilli.rollingsky</item>
-        <item>com.kiloo.subwaysurf</item>
+        <item>com.nae3.N3tRally</item>
+        <item>com.zuuks.bus.simulator.ultimate</item>
+
+        <!-- FPS Game -->
         <item>com.PoxelStudios.DudeTheftAuto</item>
+        <item>com.gsgames.pixel.combat</item>
+
+        <!-- Other Games -->
+        <item>com.studio27.MelonPlayground</item>
+        <item>com.turbochilli.rollingsky.tapio</item>
+        <item>com.kiloo.subwaysurf</item>
     </string-array>
 </resources>
