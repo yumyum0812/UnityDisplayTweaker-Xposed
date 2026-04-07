@@ -4,20 +4,9 @@
 #include <cstdint>
 #include <jni.h>
 
-#include <xdl.h>
-
-#include "proc/mem_patch.h"
-#include "utils/api_macros.h"
-#include "utils/logcat.h"
-#include "utils/lib_finder.h"
-#include "unity/engine/screen_manager.h"
-#include "unity/il2cpp/fullscreen_mode.h"
-#include "unity/il2cpp/refresh_rate.h"
-#include "apply_config.h"
-#include "asm_funcs.h"
-#include "display_tweaker.h"
 #include "module_log.h"
 #include "jni_impls.h"
+#include "display_tweaker.h"
 
 extern "C"
 JNIEXPORT JNICALL jint JNI_OnLoad(JavaVM* vm, void*) {
