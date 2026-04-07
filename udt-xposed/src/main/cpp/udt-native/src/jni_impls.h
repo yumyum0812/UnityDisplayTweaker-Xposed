@@ -4,6 +4,7 @@ namespace JniImpls {
     void Initialize(JNIEnv* env, jclass clazz) {
         if (!DisplayTweaker::Init()) {
             ModuleLog::E("Failed to initialize!");
+            return;
         }
 
         if (!DisplayTweaker::SetupResolution()) {
