@@ -1,15 +1,29 @@
 #pragma once
-
+#include <filesystem>
 #include <xdl.h>
+#include <mimem/mem_map.h>
+#include <mimem/mem_search.h>
+#include <mimem/elf_inspect.h>
 #include "unity/engine/screen_manager.h"
 #include "unity/il2cpp/fullscreen_mode.h"
 #include "unity/il2cpp/refresh_rate.h"
-#include "utils/logcat.h"
-#include "proc/mem_patch.h"
 #include "asm_funcs.h"
 #include "module_log.h"
+#include "target_arch.h"
 
-#define UDT_FORCE_OPCODE_METHOD 0
+constexpr bool UDT_FORCE_PATTERN = true;
+constexpr bool UDT_FORCE_OPCODE = false;
+
+#if TARGET_ARM64
+constexpr bool RI_PATTERN_SUPPORTED = true;
+constexpr auto RI_PATTERN = "? ? ? D1 ? ? ? A9 ? ? ? A9 F3 03 00 AA ? ? ? 91 E1 03 13 AA";
+#elif TARGET_ARMV7
+constexpr bool RI_PATTERN_SUPPORTED = true;
+constexpr auto RI_PATTERN = "? ? ? E9 ? ? ? E2 ? ? ? E2 00 40 A0 E1 04 10 A0 E1";
+#else
+constexpr bool RI_PATTERN_SUPPORTED = false;
+constexpr auto RI_PATTERN = "";
+#endif
 
 
 namespace DisplayTweaker {
@@ -28,30 +42,47 @@ namespace DisplayTweaker {
     bool SetupTargetFrameRate();
 
     struct {
-        std::unique_ptr<MemPatch> setResPatch;
-        std::unique_ptr<MemPatch> setResInjPatch;
-        std::unique_ptr<MemPatch> setFrPatch;
-        std::unique_ptr<MemPatch> reqResPatch;
+        std::unique_ptr<MiMem::MemPatch> setResPatch;
+        std::unique_ptr<MiMem::MemPatch> setResInjPatch;
+        std::unique_ptr<MiMem::MemPatch> setFrPatch;
+        std::unique_ptr<MiMem::MemPatch> reqResPatch;
     } hooks;
 
     bool Init() {
         if (il2cpp_resolve_icall) return true;
 
-        void* handle = xdl_open("libil2cpp.so", XDL_DEFAULT);
-        if (handle == nullptr) {
-            ModuleLog::E("Couldn't obtain handle of libil2cpp.so");
-            return false;
+        if (!UDT_FORCE_PATTERN) {
+            void* handle = xdl_open("libil2cpp.so", XDL_DEFAULT);
+            if (handle == nullptr) {
+                ModuleLog::E("Couldn't obtain handle of libil2cpp.so");
+            } else {
+                ModuleLog::D("libil2cpp.so handle found");
+
+                il2cpp_resolve_icall = (decltype(il2cpp_resolve_icall)) xdl_sym(handle, "il2cpp_resolve_icall", nullptr);
+                if (il2cpp_resolve_icall != nullptr) {
+                    ModuleLog::D("il2cpp_resolve_icall found with symbol");
+                } else {
+                    ModuleLog::E("Symbol il2cpp_resolve_icall was not found");
+                }
+            }
         }
 
-        ModuleLog::D("libil2cpp.so found.");
-
-        il2cpp_resolve_icall = (decltype(il2cpp_resolve_icall)) xdl_sym(handle, "il2cpp_resolve_icall", nullptr);
         if (il2cpp_resolve_icall == nullptr) {
-            ModuleLog::E("Couldn't resolve symbol: il2cpp_resolve_icall");
-            return false;
+            if (!RI_PATTERN_SUPPORTED) {
+                ModuleLog::W("Searching from pattern is not support on current ABI, skipping...");
+            } else {
+                il2cpp_resolve_icall = (decltype(il2cpp_resolve_icall)) MiMem::FindFirstCodePattern("libil2cpp.so", RI_PATTERN);
+            }
+            if (il2cpp_resolve_icall != nullptr) {
+                ModuleLog::D("il2cpp_resolve_icall found with memory pattern");
+            }
         }
 
-        ModuleLog::D("il2cpp_resolve_icall: 0x{:x}", (uintptr_t) il2cpp_resolve_icall);
+        if (il2cpp_resolve_icall != nullptr) {
+            ModuleLog::D("il2cpp_resolve_icall: 0x{:x}", (uintptr_t) il2cpp_resolve_icall);
+        } else {
+            ModuleLog::E("Couldn't find function: il2cpp_resolve_icall");
+        }
 
         return true;
     }
@@ -59,17 +90,17 @@ namespace DisplayTweaker {
     bool SetupResolution() {
         if (resInit) return true;
 
-#if !UDT_FORCE_OPCODE_METHOD
-        Screen_SetResolution = (decltype(Screen_SetResolution)) il2cpp_resolve_icall("UnityEngine.Screen::SetResolution");
-        Screen_SetResolution_Injected = (decltype(Screen_SetResolution_Injected)) il2cpp_resolve_icall("UnityEngine.Screen::SetResolution_Injected");
+        if (!UDT_FORCE_OPCODE) {
+            Screen_SetResolution = (decltype(Screen_SetResolution)) il2cpp_resolve_icall("UnityEngine.Screen::SetResolution");
+            Screen_SetResolution_Injected = (decltype(Screen_SetResolution_Injected)) il2cpp_resolve_icall("UnityEngine.Screen::SetResolution_Injected");
 
-        if (Screen_SetResolution) {
-            ModuleLog::D("SetResolution: 0x{:x}", (uintptr_t) Screen_SetResolution);
+            if (Screen_SetResolution) {
+                ModuleLog::D("SetResolution: 0x{:x}", (uintptr_t) Screen_SetResolution);
+            }
+            if (Screen_SetResolution_Injected) {
+                ModuleLog::D("SetResolution_Injected: 0x{:x}", (uintptr_t) Screen_SetResolution_Injected);
+            }
         }
-        if (Screen_SetResolution_Injected) {
-            ModuleLog::D("SetResolution_Injected: 0x{:x}", (uintptr_t) Screen_SetResolution_Injected);
-        }
-#endif
 
         if ((Screen_SetResolution == nullptr) && (Screen_SetResolution_Injected == nullptr)) {
             auto Screen_get_width = (int (*)()) il2cpp_resolve_icall("UnityEngine.Screen::get_width");
@@ -79,8 +110,8 @@ namespace DisplayTweaker {
             }
             ModuleLog::D("get_width: 0x{:x}", (uintptr_t) Screen_get_width);
 
-            // 先頭の命令4つから GetScreenManager の呼び出しを期待
-            GetScreenManager = (decltype(GetScreenManager)) AsmFuncs::FindSubroutineCall((uintptr_t) Screen_get_width, 4);
+            // except GetScreenManager call within the first 4 instructions
+            GetScreenManager = (decltype(GetScreenManager)) AsmFuncs::FindNativeSubroutineCall((uintptr_t) Screen_get_width, 4);
             if (GetScreenManager == nullptr) {
                 ModuleLog::E("Couldn't find call of GetScreenManager!");
                 return false;
@@ -115,11 +146,13 @@ namespace DisplayTweaker {
         bool success = false;
 
         if (Screen_SetResolution) {
-            if (hooks.setResPatch != nullptr) hooks.setResPatch->Restore();
+            if (hooks.setResPatch != nullptr)
+                hooks.setResPatch->Restore();
 
             Screen_SetResolution(width, height, FullScreenMode::FullScreenWindow, 0);
 
-            hooks.setResPatch = AsmFuncs::CreateDisableVoidPatch((uintptr_t) Screen_SetResolution);
+            if (hooks.setResPatch == nullptr)
+                hooks.setResPatch = AsmFuncs::CreateNativeDisableVoidPatch((uintptr_t) Screen_SetResolution);
             hooks.setResPatch->Modify();
 
             ModuleLog::I("Changed resolution successfully (1)");
@@ -127,11 +160,13 @@ namespace DisplayTweaker {
         }
 
         if (Screen_SetResolution_Injected) {
-            if (hooks.setResInjPatch != nullptr) hooks.setResInjPatch->Restore();
+            if (hooks.setResInjPatch != nullptr)
+                hooks.setResInjPatch->Restore();
 
             Screen_SetResolution_Injected(width, height, FullScreenMode::FullScreenWindow, {0, 0});
 
-            hooks.setResInjPatch = AsmFuncs::CreateDisableVoidPatch((uintptr_t) Screen_SetResolution_Injected);
+            if (hooks.setResInjPatch == nullptr)
+                hooks.setResInjPatch = AsmFuncs::CreateNativeDisableVoidPatch((uintptr_t) Screen_SetResolution_Injected);
             hooks.setResInjPatch->Modify();
 
             ModuleLog::I("Changed resolution successfully (2)");
@@ -147,11 +182,13 @@ namespace DisplayTweaker {
 
             ModuleLog::D("ScreenManager: 0x{:x}", (uintptr_t) sm);
 
-            if (hooks.reqResPatch != nullptr) hooks.reqResPatch->Restore();
+            if (hooks.reqResPatch != nullptr)
+                hooks.reqResPatch->Restore();
 
             sm->RequestResolution(width, height, true, 0);
 
-            hooks.reqResPatch = AsmFuncs::CreateDisableVoidPatch((uintptr_t) sm->vtable->RequestResolution);
+            if (hooks.reqResPatch == nullptr)
+                hooks.reqResPatch = AsmFuncs::CreateNativeDisableVoidPatch((uintptr_t) sm->vtable->RequestResolution);
             hooks.reqResPatch->Modify();
 
             ModuleLog::I("Changed resolution successfully (3)");
@@ -168,11 +205,13 @@ namespace DisplayTweaker {
         }
 
         if (Application_set_targetFrameRate != nullptr) {
-            if (hooks.setFrPatch != nullptr) hooks.setFrPatch->Restore();
+            if (hooks.setFrPatch != nullptr)
+                hooks.setFrPatch->Restore();
 
             Application_set_targetFrameRate(target);
 
-            hooks.setFrPatch = AsmFuncs::CreateDisableVoidPatch((uintptr_t) Application_set_targetFrameRate);
+            if (hooks.setFrPatch == nullptr)
+                hooks.setFrPatch = AsmFuncs::CreateNativeDisableVoidPatch((uintptr_t) Application_set_targetFrameRate);
             hooks.setFrPatch->Modify();
 
             ModuleLog::I("Changed target framerate successfully (1)");
