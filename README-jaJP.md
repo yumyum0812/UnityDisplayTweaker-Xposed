@@ -50,6 +50,8 @@ pm disable-user --user 0 com.samsung.android.game.gos
 pm uninstall --user 0 com.samsung.android.game.gametools
 pm uninstall --user 0 com.samsung.android.game.gamehome
 ```
+### FPS制限の修正
+- FPSをアンロックする場合は、開発者オプションにある「Disable default frame rate for games」を有効にしてください。
 
 ### 再有効化
 #### Game Optimizing Service の有効化

@@ -38,8 +38,8 @@ On some Samsung devices, the resolution based on the native resolution may not b
 In this case, disabling the feature may resolve the issue.
 ### Execution
 Run the command in one of the following environments:
-- ADB shell：`adb shell ...`
-- shell privilege：`su shell -c "..."`
+- ADB Shell：`adb shell ...`
+- Shell Privilege：`su shell -c "..."`
 ### Disable
 #### Disable Game Optimizing Service
 ```shell
@@ -50,6 +50,9 @@ pm disable-user --user 0 com.samsung.android.game.gos
 pm uninstall --user 0 com.samsung.android.game.gametools
 pm uninstall --user 0 com.samsung.android.game.gamehome
 ```
+#### Fix FPS cap
+- If you want to unlock FPS, turn on **"Disable default frame rate for games"** in the developer options.
+
 ### Re-Enable
 #### Enable Game Optimizing Service
 ```shell
