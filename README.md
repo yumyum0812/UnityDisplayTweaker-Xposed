@@ -38,8 +38,8 @@ On some Samsung devices, the resolution based on the native resolution may not b
 In this case, disabling the feature may resolve the issue.
 ### Execution
 Run the command in one of the following environments:
-- ADB Shell：`adb shell ...`
-- Shell Privilege：`su shell -c "..."`
+- ADB Shell: `adb shell ...`
+- Shell Privilege: `su shell -c "..."`
 ### Disable
 #### Disable Game Optimizing Service
 ```shell
