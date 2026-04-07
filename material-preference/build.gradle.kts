@@ -1,8 +1,10 @@
+import com.android.build.api.dsl.LibraryExtension
+
 plugins {
     alias(libs.plugins.android.library)
 }
 
-android {
+extensions.configure<LibraryExtension> {
     namespace = "jp.miruku.material.preference"
     compileSdk {
         version = release(36)

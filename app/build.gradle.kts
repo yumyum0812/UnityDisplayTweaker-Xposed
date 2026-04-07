@@ -1,4 +1,5 @@
-import android.databinding.tool.ext.capitalizeUS
+import com.android.build.api.artifact.SingleArtifact
+import com.android.build.api.dsl.ApplicationExtension
 import java.util.Properties
 
 val localProperties = Properties()
@@ -8,7 +9,7 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
-android {
+extensions.configure<ApplicationExtension> {
     namespace = "jp.miruku.unitydisplaytweaker"
     compileSdk {
         version = release(36)
@@ -91,19 +92,30 @@ dependencies {
     implementation(project(":udt-xposed"))
 }
 
-android.applicationVariants.all {
-    val variant = this
-    val variantNameCapped = variant.name.capitalizeUS()
+androidComponents.onVariants { variant ->
+    val name = variant.name
+    val capped = name.replaceFirstChar { it.uppercase() }
+    val adbExeProv = androidComponents.sdkComponents.adb
+    val apkDirProv = variant.artifacts.get(SingleArtifact.APK)
 
-    tasks.register<Exec>("install${variantNameCapped}ForUser") {
+    tasks.register<Exec>("install${capped}ForUser") {
         group = "installation"
         description = "Install APK for specific user"
-        dependsOn("assemble${variantNameCapped}")
+        dependsOn("assemble${capped}")
 
         doFirst {
-            val uidStr = project.findProperty("uid")?.toString() ?: throw IllegalArgumentException("uid not given! add -Puid=<UID> to argument!")
-            val apkFile = variant.outputs.first().outputFile
-            commandLine(android.adbExecutable.absolutePath, "install", "-r", "--user", uidStr, apkFile.absolutePath)
+            val uidStr = project.findProperty("uid")?.toString()
+                ?: throw IllegalArgumentException("uid not given! add -Puid=<UID> to argument!")
+            val adbExe = adbExeProv.get().asFile
+            val apkDir = apkDirProv.get().asFile
+            val apkFiles = apkDir.walkTopDown().filter { it.extension == "apk" }
+
+            val args = mutableListOf("install-multiple", "-r", "--user", uidStr)
+            args += apkFiles.map { it.absolutePath }
+
+            logger.debug("adb executable: ${adbExe.absolutePath}")
+            logger.debug("arguments: ${args.joinToString(" ")}")
+            commandLine(adbExe.absolutePath, *args.toTypedArray())
         }
     }
 }

@@ -1,8 +1,10 @@
+import com.android.build.api.dsl.LibraryExtension
+
 plugins {
     alias(libs.plugins.android.library)
 }
 
-android {
+extensions.configure<LibraryExtension> {
     namespace = "jp.miruku.unitydisplaytweaker.module"
     ndkVersion = "29.0.14206865"
     compileSdk {
@@ -12,7 +14,7 @@ android {
     defaultConfig {
         minSdk = 24
 
-        consumerProguardFiles("proguard-rules.pro")
+        consumerProguardFiles("consumer-rules.pro")
 
         ndk {
             abiFilters.add("armeabi-v7a")
