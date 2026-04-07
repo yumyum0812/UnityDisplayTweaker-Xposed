@@ -3,6 +3,7 @@
         <!-- Vehicle Games -->
         <item>com.fengiiley.frlegends</item>
         <item>com.olzhas.carparking.multyplayer</item>
+        <item>com.olzhas.carparking.multyplayer2</item>
         <item>com.drivezone.car.race.game</item>
         <item>com.aim.racing</item>
         <item>com.sbkgames.rallyracerdirt</item>
@@ -10,14 +11,27 @@
         <item>com.unrealgames.RacinginCar2020</item>
         <item>com.nae3.N3tRally</item>
         <item>com.zuuks.bus.simulator.ultimate</item>
+        <item>com.GamesEZ.CustomClubOnline</item>
+        <item>com.carxtech.carxdr3</item>
 
-        <!-- FPS Game -->
+        <!-- FPS Games -->
         <item>com.PoxelStudios.DudeTheftAuto</item>
+        <item>com.vinforlabteam.vmod</item>
         <item>com.gsgames.pixel.combat</item>
+        <item>com.catsbit.sandbox3d</item>
+        <item>com.birdydogstudio.oceanishome</item>
+        <item>com.igenesoft.hide</item> <!-- MP -->
+        <item>com.SimpleSandbox2</item> <!-- MP -->
+        <item>com.MadnessGames.SimpleSandbox3</item>
+        <item>com.evertechsandbox</item>
 
         <!-- Other Games -->
         <item>com.studio27.MelonPlayground</item>
         <item>com.turbochilli.rollingsky.tapio</item>
         <item>com.kiloo.subwaysurf</item>
+        <item>com.noodlecake.altosadventure</item>
+        <item>com.rkgames.basisgame</item>
+        <item>jp.co.cygames.umamusume</item>
+        <item>com.YostarJP.BlueArchive</item>
     </string-array>
 </resources>
