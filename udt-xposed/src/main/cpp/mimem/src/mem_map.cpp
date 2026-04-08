@@ -11,7 +11,7 @@
 using namespace MiMem;
 
 
-bool IsBlank(const std::string& s) {
+static bool IsBlank(const std::string& s) {
     if (s.empty()) return true;
     return std::all_of(s.begin(), s.end(), [](unsigned char ch) {
         return std::isspace(ch);
