@@ -20,7 +20,7 @@ static bool IsBlank(const std::string& s) {
 
 // start-end  perms  offset  dev  inode  pathname
 // ?X-?X  [r-][w-][x-][ps]  8D  2X:2X  ?D  (...)
-void TryParseAndAppend(const std::string& line, std::vector<MemMap>& vec) {
+static void TryParseAndAppend(const std::string& line, std::vector<MemMap>& vec) {
     if (IsBlank(line))
         return;
 
