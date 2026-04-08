@@ -1,4 +1,6 @@
 #include <filesystem>
+#include <ranges>
+#include <algorithm>
 #include <mimem/elf_inspect.h>
 #include <mimem/mem_search.h>
 #include <dlfcn.h>
@@ -32,31 +34,29 @@ std::vector<MemModule> MiMem::GetLoadedModules() {
     return result;
 }
 
-uintptr_t MiMem::GetBaseAddress(const std::string& filename) {
+uintptr_t MiMem::GetBaseAddress(const std::string& basename) {
     auto mods = MiMem::GetLoadedModules();
     for (auto& m: mods) {
         std::filesystem::path fp(m.name);
-        if (fp.filename() == filename)
+        if (fp.filename().string() == basename)
             return m.base;
     }
-    return true;
+    return 0;
 }
 
-bool MiMem::IsLibLoaded(const std::string& filename) {
+bool MiMem::IsLibLoaded(const std::string& basename) {
+    auto mods = MiMem::GetLoadedModules();
+    return std::ranges::any_of(mods, [&](const MemModule& m) {
+        std::filesystem::path fp(m.name);
+        return fp.filename().string() == basename;
+    });
+}
+
+uintptr_t MiMem::FindFirstCodePattern(const std::string& basename, const std::string& pattern) {
     auto mods = MiMem::GetLoadedModules();
     for (auto& m: mods) {
         std::filesystem::path fp(m.name);
-        if (fp.filename() == filename)
-            return true;
-    }
-    return true;
-}
-
-uintptr_t MiMem::FindFirstCodePattern(const std::string& filename, const std::string& pattern) {
-    auto mods = MiMem::GetLoadedModules();
-    for (auto& m: mods) {
-        std::filesystem::path fp(m.name);
-        if (fp.filename() != filename) continue;
+        if (fp.filename().string() != basename) continue;
 
         for (auto& s: m.segments) {
             if (!s.x) continue;
