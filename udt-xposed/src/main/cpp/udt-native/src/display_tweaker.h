@@ -140,13 +140,11 @@ namespace DisplayTweaker {
         return true;
     }
 
-    bool PatchResolution(int width, int height) {
+    bool PatchResolution(int width, int height, bool lock = true) {
         if (!resInit) {
             ModuleLog::E("Resolution functions not init!");
             return false;
         }
-
-        bool success = false;
 
         if (Screen_SetResolution) {
             if (hooks.setResPatch != nullptr)
@@ -154,12 +152,13 @@ namespace DisplayTweaker {
 
             Screen_SetResolution(width, height, FullScreenMode::FullScreenWindow, 0);
 
-            if (hooks.setResPatch == nullptr)
-                hooks.setResPatch = AsmFuncs::CreateNativeDisableVoidPatch((uintptr_t) Screen_SetResolution);
-            hooks.setResPatch->Modify();
+            if (lock) {
+                if (hooks.setResPatch == nullptr)
+                    hooks.setResPatch = AsmFuncs::CreateNativeDisableVoidPatch((uintptr_t) Screen_SetResolution);
+                hooks.setResPatch->Modify();
+            }
 
             ModuleLog::I("Changed resolution successfully (1)");
-            success = true;
         }
 
         if (Screen_SetResolution_Injected) {
@@ -168,15 +167,16 @@ namespace DisplayTweaker {
 
             Screen_SetResolution_Injected(width, height, FullScreenMode::FullScreenWindow, {0, 0});
 
-            if (hooks.setResInjPatch == nullptr)
-                hooks.setResInjPatch = AsmFuncs::CreateNativeDisableVoidPatch((uintptr_t) Screen_SetResolution_Injected);
-            hooks.setResInjPatch->Modify();
+            if (lock) {
+                if (hooks.setResInjPatch == nullptr)
+                    hooks.setResInjPatch = AsmFuncs::CreateNativeDisableVoidPatch((uintptr_t) Screen_SetResolution_Injected);
+                hooks.setResInjPatch->Modify();
+            }
 
             ModuleLog::I("Changed resolution successfully (2)");
-            success = true;
         }
 
-        if (!success && (GetScreenManager != nullptr)) {
+        if (GetScreenManager != nullptr) {
             ScreenManager* sm = GetScreenManager();
             if (sm == nullptr) {
                 ModuleLog::E("Couldn't obtain ScreenManager!");
@@ -190,18 +190,20 @@ namespace DisplayTweaker {
 
             sm->RequestResolution(width, height, true, 0);
 
-            if (hooks.reqResPatch == nullptr)
-                hooks.reqResPatch = AsmFuncs::CreateNativeDisableVoidPatch((uintptr_t) sm->vtable->RequestResolution);
-            hooks.reqResPatch->Modify();
+            if (lock) {
+                if (hooks.reqResPatch == nullptr)
+                    hooks.reqResPatch = AsmFuncs::CreateNativeDisableVoidPatch((uintptr_t) sm->vtable->RequestResolution);
+                hooks.reqResPatch->Modify();
+            }
 
             ModuleLog::I("Changed resolution successfully (3)");
             return true;
         }
 
-        return success;
+        return true;
     }
 
-    bool PatchTargetFrameRate(int target) {
+    bool PatchTargetFrameRate(int target, bool lock = true) {
         if (!frInit) {
             ModuleLog::E("Framerate functions not init!");
             return false;
@@ -213,13 +215,16 @@ namespace DisplayTweaker {
 
             Application_set_targetFrameRate(target);
 
-            if (hooks.setFrPatch == nullptr)
-                hooks.setFrPatch = AsmFuncs::CreateNativeDisableVoidPatch((uintptr_t) Application_set_targetFrameRate);
-            hooks.setFrPatch->Modify();
+            if (lock) {
+                if (hooks.setFrPatch == nullptr)
+                    hooks.setFrPatch = AsmFuncs::CreateNativeDisableVoidPatch((uintptr_t) Application_set_targetFrameRate);
+                hooks.setFrPatch->Modify();
+            }
 
             ModuleLog::I("Changed target framerate successfully (1)");
             return true;
         }
+
         return false;
     }
 }
