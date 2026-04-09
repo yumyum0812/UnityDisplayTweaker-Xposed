@@ -14,7 +14,7 @@ public class XposedEntry implements IXposedHookLoadPackage {
         if (!param.isFirstApplication) return;
         ModuleLog.i("Module loaded: " + param.packageName);
 
-        UDTNative.loadLib();
+        TweakerNative.loadLib();
         ModuleLog.i("Native library loaded");
 
         Config.load();

@@ -2,7 +2,7 @@
 #include "display_tweaker.h"
 #include "module_log.h"
 
-namespace JniImpls {
+namespace TweakerJni {
     void Initialize(JNIEnv* env, jclass clazz) {
         if (!DisplayTweaker::Init()) {
             ModuleLog::E("Failed to initialize!");
@@ -18,14 +18,14 @@ namespace JniImpls {
         }
     }
 
-    void SetResolution(JNIEnv* env, jclass clazz, jint width, jint height) {
-        if (!DisplayTweaker::PatchResolution(width, height)) {
+    void SetResolution(JNIEnv* env, jclass clazz, jint width, jint height, jboolean lock) {
+        if (!DisplayTweaker::PatchResolution(width, height, lock)) {
             ModuleLog::E("Failed to change resolution!");
         }
     }
 
-    void SetFpsCap(JNIEnv* env, jclass clazz, jint fpsCap) {
-        if (!DisplayTweaker::PatchTargetFrameRate(fpsCap)) {
+    void SetFpsCap(JNIEnv* env, jclass clazz, jint fpsCap, jboolean lock) {
+        if (!DisplayTweaker::PatchTargetFrameRate(fpsCap, lock)) {
             ModuleLog::E("Failed to change fps cap!");
         }
     }

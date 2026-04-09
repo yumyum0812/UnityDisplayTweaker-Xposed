@@ -2,7 +2,7 @@ package jp.miruku.unitydisplaytweaker.module;
 
 import jp.miruku.unitydisplaytweaker.module.util.ModuleLog;
 
-public final class UDTNative {
+public final class TweakerNative {
     public static void loadLib() {
         try {
             System.loadLibrary("udt-native");
@@ -13,6 +13,6 @@ public final class UDTNative {
     }
 
     public static native void initialize();
-    public static native void setResolution(int width, int height);
-    public static native void setFpsCap(int maxFps);
+    public static native void setResolution(int width, int height, boolean lock);
+    public static native void setFpsCap(int maxFps, boolean lock);
 }
