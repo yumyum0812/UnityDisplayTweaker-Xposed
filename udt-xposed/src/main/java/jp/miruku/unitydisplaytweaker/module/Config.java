@@ -2,7 +2,10 @@ package jp.miruku.unitydisplaytweaker.module;
 
 public class Config {
     public boolean showToastOnLoad;
+    public boolean lock;
     public float delayApply;
+    public boolean applyRegularly;
+    public float applyingInterval;
     public boolean changeResolution;
     public boolean useWindowResolution;
     public int customWidth;
@@ -20,7 +23,10 @@ public class Config {
         var prefs = new Preferences("module_config");
         config = new Config();
         config.showToastOnLoad = prefs.loadBoolean("show_toast", true);
+        config.lock = prefs.loadBoolean("lock_settings", true);
         config.delayApply = prefs.loadFloatStr("delay", 5.f);
+        config.applyRegularly = prefs.loadBoolean("apply_regularly", false);
+        config.applyingInterval = prefs.loadFloatStr("applying_interval", 5.f);
         config.changeResolution = prefs.loadBoolean("change_resolution", false);
         config.useWindowResolution = prefs.loadBoolean("use_window_resolution", false);
         config.customWidth = prefs.loadIntStr("custom_width", 1280);

@@ -16,11 +16,21 @@
 
     <!-- Show toast on load -->
     <string name="title_show_toast">Show toast on load</string>
-    <string name="summary_show_toast">Show a toast message when the module is loaded</string>
+    <string name="summary_show_toast">Shows a toast message when the module is loaded</string>
+
+    <!-- Lock settings -->
+    <string name="title_lock_settings">Lock settings</string>
+    <string name="summary_lock_settings">Locks settings with disabling certain functions to prevent update settings by game (It may be detected)</string>
 
     <!-- Delay before applying -->
     <string name="title_delay">Apply delay</string>
-    <string name="dialog_delay">Delay before applying display settings (seconds)</string>
+    <string name="dialog_delay">Delays before applying display settings (seconds)</string>
+
+    <!-- Apply regularly -->
+    <string name="title_apply_regularly">Apply regularly</string>
+    <string name="summary_apply_regularly">Applies settings per when specified time elapsed</string>
+    <string name="title_apply_interval">Applying interval</string>
+    <string name="dialog_apply_interval">Interval of applying interval (seconds)</string>
 
     <!-- Category: Rendering Resolution -->
     <string name="category_resolution">Rendering Resolution</string>
@@ -31,7 +41,7 @@
 
     <!-- Use native resolution -->
     <string name="title_use_window_resolution">Use window resolution</string>
-    <string name="summary_use_window_resolution">Use the window\'s resolution of the activity instead of a custom resolution</string>
+    <string name="summary_use_window_resolution">Uses the window\'s resolution of the activity instead of a custom resolution</string>
 
     <!-- Custom width -->
     <string name="title_custom_width">Custom width</string>

@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- ■ 全般カテゴリ -->
+    <!-- general -->
     <PreferenceCategory
         android:title="@string/category_general">
 
@@ -13,6 +13,12 @@
             android:summary="@string/summary_show_toast"
             android:defaultValue="true" />
 
+        <SwitchPreferenceCompat
+            android:key="lock_settings"
+            android:title="@string/title_lock_settings"
+            android:summary="@string/summary_lock_settings"
+            android:defaultValue="true" />
+
         <EditTextPreference
             android:key="delay"
             android:title="@string/title_delay"
@@ -20,9 +26,25 @@
             android:inputType="number"
             android:defaultValue="5.0"
             app:useSimpleSummaryProvider="true"/>
+
+        <SwitchPreferenceCompat
+            android:key="apply_regularly"
+            android:title="@string/title_apply_regularly"
+            android:summary="@string/summary_apply_regularly"
+            android:defaultValue="false" />
+
+        <EditTextPreference
+            android:key="applying_interval"
+            android:title="@string/title_apply_interval"
+            android:dialogTitle="@string/title_apply_interval"
+            android:inputType="number"
+            android:defaultValue="5.0"
+            android:dependency="apply_regularly"
+            app:useSimpleSummaryProvider="true"/>
+
     </PreferenceCategory>
 
-    <!-- ■ 解像度カテゴリ -->
+    <!-- rendering resolution -->
     <PreferenceCategory
         android:title="@string/category_resolution">
 
@@ -85,7 +107,7 @@
 
     </PreferenceCategory>
 
-    <!-- ■ 最大FPSカテゴリ -->
+    <!-- fps cap -->
     <PreferenceCategory
         android:title="@string/category_fps_cap">
 

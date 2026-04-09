@@ -13,11 +13,21 @@
 
     <!-- 読み込み時にトーストを表示 -->
     <string name="title_show_toast">読み込み時にトーストを表示</string>
-    <string name="summary_show_toast">モジュール読み込み時にトーストを表示するかどうかを設定します</string>
+    <string name="summary_show_toast">モジュール読み込み時にトーストを表示します</string>
+
+    <!-- 設定を固定 -->
+    <string name="title_lock_settings">設定を固定</string>
+    <string name="summary_lock_settings">特定の関数を無効化することでゲームによる設定の更新を防ぎます（検出される可能性があります）</string>
 
     <!-- 適用までの待機時間 -->
     <string name="title_delay">適用までの待機時間</string>
     <string name="dialog_delay">画面設定を適用するまでの待機時間（秒）</string>
+
+    <!-- 定期的に適用 -->
+    <string name="title_apply_regularly">定期的に適用</string>
+    <string name="summary_apply_regularly">指定した時間が経過するごとに設定を適用します</string>
+    <string name="title_apply_interval">適用する間隔</string>
+    <string name="dialog_apply_interval">定期的な適用の間隔（秒）</string>
 
     <!-- カテゴリ: 描画解像度 -->
     <string name="category_resolution">描画解像度</string>

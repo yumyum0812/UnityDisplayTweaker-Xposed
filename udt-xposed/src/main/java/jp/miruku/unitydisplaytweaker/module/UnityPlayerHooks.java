@@ -31,7 +31,7 @@ public class UnityPlayerHooks {
     }
 
     private class ConstructorHook extends XC_MethodHook {
-        private int mWindowWidth, mWindowHeight = 0;
+        private int mPrevWidth, mPrevHeight = 0;
         private Activity mActivity;
         private View mContentView;
         private boolean mDelayInit = false;
@@ -47,31 +47,46 @@ public class UnityPlayerHooks {
             }
 
             mContentView = window.findViewById(Window.ID_ANDROID_CONTENT);
-            mContentView.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> updateResolution());
+            mContentView.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> onWindowSizeChanged());
             mContentView.postDelayed(this::delayInitialize, (int)(mConfig.delayApply * 1000));
+            if (mConfig.applyRegularly) {
+                mContentView.postDelayed(this::regularlyApply, (int)(mConfig.applyingInterval * 1000));
+            }
+        }
+
+        private void onWindowSizeChanged() {
+            updateResolution(false);
         }
 
         private void delayInitialize() {
             mDelayInit = true;
             initizalizeApi();
-            updateResolution();
+            updateResolution(true);
             updateFps();
         }
 
-        private void initizalizeApi() {
-            UDTNative.initialize();
+        private void regularlyApply() {
+            if (mDelayInit) {
+                updateResolution(true);
+                updateFps();
+            }
+            mContentView.postDelayed(this::regularlyApply, (int)(mConfig.applyingInterval * 1000));
         }
 
-        private void updateResolution() {
+        private void initizalizeApi() {
+            TweakerNative.initialize();
+        }
+
+        private void updateResolution(boolean force) {
             if (!mDelayInit) return;
             if (!mConfig.changeResolution) return;
 
             int mw = mContentView.getMeasuredWidth();
             int mh = mContentView.getMeasuredHeight();
-            if (mWindowWidth != mw || mWindowHeight != mh) {
+            if (force || (mPrevWidth != mw || mPrevHeight != mh)) {
                 ModuleLog.i("Window size: " + mw + "x" + mh);
-                mWindowWidth = mw;
-                mWindowHeight = mh;
+                mPrevWidth = mw;
+                mPrevHeight = mh;
 
                 int w = mConfig.useWindowResolution ? mw : mConfig.customWidth;
                 int h = mConfig.useWindowResolution ? mh : mConfig.customHeight;
@@ -83,7 +98,7 @@ public class UnityPlayerHooks {
                 int targetWidth = w;
                 int targetHeight = h;
                 ModuleLog.i("Target resolution: " + w + "x" + h);
-                UDTNative.setResolution(targetWidth, targetHeight);
+                TweakerNative.setResolution(targetWidth, targetHeight, mConfig.lock);
             }
         }
 
@@ -96,7 +111,7 @@ public class UnityPlayerHooks {
 
             int last = mConfig.useNativeRefreshRate ? rr : mConfig.fpsCap;
             ModuleLog.i("Target FPS cap: " + last);
-            UDTNative.setFpsCap(last);
+            TweakerNative.setFpsCap(last, mConfig.lock);
         }
     }
 }
